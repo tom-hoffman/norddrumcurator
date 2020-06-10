@@ -4,7 +4,7 @@
 Test setup
 ----------
 
-    >>> from nd1manager import *
+    >>> from model import *
     >>> from ndTestSetup import *
     
 Generating test data
@@ -38,7 +38,7 @@ A reference for implementing this in the main code later.
     >>> import pickle
     >>> t = tempfile.TemporaryFile()
     >>> t.write(pickle.dumps(tdr)) # output not significant
-    6962
+    7081
     >>> t.seek(0) 
     0
     >>> loaded = pickle.load(t)
@@ -49,8 +49,7 @@ A reference for implementing this in the main code later.
 Populating the memory tree store
 --------------------------------
 
+    >>> from window import *
     >>> populateMemoryTreeStore(tdr.memory, tdr.programs) #doctest: +ELLIPSIS
     <Gtk.TreeStore object at ... (GtkTreeStore at ...)>
-    >>> print(emptyRoot())
-    DataRoot has 1 programs on disc and 99 in memory.
-    >>> 
+    

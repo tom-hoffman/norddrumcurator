@@ -1,3 +1,5 @@
+import zlib
+
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -69,7 +71,8 @@ class MemoryWindow(Gtk.ApplicationWindow):
         # (button :: Gtk.Button, slot :: int, action :: str) ->
         print(f"Clicked {action} for {slot}.")
         if action == "Pull":
-            self.importWindow = dialogs.ImportOneProgramWindow(self.app.root, self.app.port)
+            self.importWindow = dialogs.ImportOneProgramWindow(self.app.root,
+                                                               self.app.port)
             self.importWindow.set_transient_for(self)
             self.importWindow.show_all()
             callback_id = GLib.timeout_add(250, self.pull_one,
@@ -82,7 +85,12 @@ class MemoryWindow(Gtk.ApplicationWindow):
             return True
         elif (msg.type == "sysex") and (len(msg.data) == 108):
             iw = self.importWindow
-            self.midiMessage = msg.data # maybe put this in the child window.
+            chk = zlib.crc32(msg.bin())
+            # check to see if this is a dupe.
+            # if not...
+            self.importWindow.midiMessage = msg.data
+            self.importWindow.checkSum = chk
+            self.importWindow.subButt.set_sensitive(True)
             sw = Gtk.StackSwitcher()
             sw.set_stack(iw.stack)
             sw.show()

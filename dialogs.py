@@ -4,53 +4,7 @@ from gi.repository import Gtk
 
 from constants import *
 from functions import *
-
-def layoutProgramPage():
-    progGrid = Gtk.Grid()
-    nameLabel = Gtk.Label("Name: ")
-    self.nameEntry = Gtk.Entry()
-    progGrid.attach(nameLabel, 0, 0, 1, 1)
-    progGrid.attach(self.nameEntry, 1, 0, 2, 1)
-    styleLabel = Gtk.Label("Style: ")
-    self.styleCombo = Gtk.ComboBoxText()
-    for style in STYLES:
-        styleCombo.append_text(style)
-    progGrid.attach(styleLabel, 0, 1, 1, 1)
-    progGrid.attach(self.styleCombo, 1, 1, 2, 1)
-    catLabel = Gtk.Label("Category: ")
-    self.catCombo = Gtk.ComboBoxText()
-    for cat in CATEGORIES:
-        self.catCombo.append_text(cat)
-    progGrid.attach(catLabel, 0, 2, 1, 1)
-    progGrid.attach(self.catCombo, 1, 2, 2, 1)
-    favoriteLabel = Gtk.Label("Favorite: ")
-    self.favoriteButton = Gtk.CheckButton()
-    progGrid.attach(favoriteLabel, 0, 3, 1, 1)
-    progGrid.attach(self.favoriteButton, 1, 3, 2, 1)
-    presetLabel = Gtk.Label("Nord Preset: ")
-    self.presetButton = Gtk.CheckButton()
-    progGrid.attach(presetLabel, 0, 4, 1, 1)
-    progGrid.attach(self.presetButton, 1, 4, 2, 1)
-    return progGrid
-
-def layoutChannelPage():
-    chanGrid = Gtk.Grid()
-    nameLabel = Gtk.Label("Name: ")
-    nameEntry = Gtk.Entry()
-    chanGrid.attach(nameLabel, 0, 0, 1, 1)
-    chanGrid.attach(nameEntry, 1, 0, 2, 1)
-    instLabel = Gtk.Label("Instrument: ")
-    instCombo = Gtk.ComboBoxText()
-    for instrument in INSTRUMENTS:
-        instCombo.append_text(instrument)
-    chanGrid.attach(instLabel, 0, 1, 1, 1)
-    chanGrid.attach(instCombo, 1, 1, 2, 1)
-    favoriteLabel = Gtk.Label("Favorite: ")
-    favoriteButton = Gtk.CheckButton()
-    chanGrid.attach(favoriteLabel, 0, 2, 1, 1)
-    chanGrid.attach(favoriteButton, 1, 2, 2, 1)
-    return chanGrid
-
+from model import * 
 
 class ImportOneProgramWindow(Gtk.Window):
     def __init__(self, root, midi_port):
@@ -74,7 +28,7 @@ class ImportOneProgramWindow(Gtk.Window):
         self.stack.add_titled(self.progGrid, "prog_page", "Program")
         # page 3 - 6 - channel metadata
         for i in range(1, 5):
-            self.stack.add_titled(layoutChannelPage(),
+            self.stack.add_titled(self.layoutChannelPage(),
                                   f"chan_{i}_page", f"CH{i}")
         # putting it together
         self.outerVBox.pack_start(self.stack, True, True, 0)
@@ -84,9 +38,9 @@ class ImportOneProgramWindow(Gtk.Window):
     def layoutProgramPage(self):
         self.progGrid = Gtk.Grid()
         nameLabel = Gtk.Label("Name: ")
-        self.nameEntry = Gtk.Entry()
+        self.progNameEntry = Gtk.Entry()
         self.progGrid.attach(nameLabel, 0, 0, 1, 1)
-        self.progGrid.attach(self.nameEntry, 1, 0, 2, 1)
+        self.progGrid.attach(self.progNameEntry, 1, 0, 2, 1)
         styleLabel = Gtk.Label("Style: ")
         self.styleCombo = Gtk.ComboBoxText()
         for style in STYLES:
@@ -119,17 +73,76 @@ class ImportOneProgramWindow(Gtk.Window):
         self.spinner.start()
         loadVBox.pack_start(self.spinner, False, False, 20)
         return loadVBox
-    
-    def cancel(self, msg):
+
+#     def layoutProgramPage(self):
+#         progGrid = Gtk.Grid()
+#         nameLabel = Gtk.Label("Name: ")
+#         self.progNameEntry = Gtk.Entry()
+#         progGrid.attach(nameLabel, 0, 0, 1, 1)
+#         progGrid.attach(self.progNameEntry, 1, 0, 2, 1)
+#         styleLabel = Gtk.Label("Style: ")
+#         self.styleCombo = Gtk.ComboBoxText()
+#         for style in STYLES:
+#             self.styleCombo.append_text(style)
+#         progGrid.attach(styleLabel, 0, 1, 1, 1)
+#         progGrid.attach(self.styleCombo, 1, 1, 2, 1)
+#         catLabel = Gtk.Label("Category: ")
+#         self.catCombo = Gtk.ComboBoxText()
+#         for cat in CATEGORIES:
+#             self.catCombo.append_text(cat)
+#         progGrid.attach(catLabel, 0, 2, 1, 1)
+#         progGrid.attach(self.catCombo, 1, 2, 2, 1)
+#         favoriteLabel = Gtk.Label("Favorite: ")
+#         self.favoriteButton = Gtk.CheckButton()
+#         progGrid.attach(favoriteLabel, 0, 3, 1, 1)
+#         progGrid.attach(self.favoriteButton, 1, 3, 2, 1)
+#         presetLabel = Gtk.Label("Nord Preset: ")
+#         self.presetButton = Gtk.CheckButton()
+#         progGrid.attach(presetLabel, 0, 4, 1, 1)
+#         progGrid.attach(self.presetButton, 1, 4, 2, 1)
+#         return progGrid
+
+    def layoutChannelPage(self):
+        chanGrid = Gtk.Grid()
+        nameLabel = Gtk.Label("Name: ")
+        nameEntry = Gtk.Entry()
+        chanGrid.attach(nameLabel, 0, 0, 1, 1)
+        chanGrid.attach(nameEntry, 1, 0, 2, 1)
+        instLabel = Gtk.Label("Instrument: ")
+        instCombo = Gtk.ComboBoxText()
+        for instrument in INSTRUMENTS:
+            instCombo.append_text(instrument)
+        chanGrid.attach(instLabel, 0, 1, 1, 1)
+        chanGrid.attach(instCombo, 1, 1, 2, 1)
+        favoriteLabel = Gtk.Label("Favorite: ")
+        favoriteButton = Gtk.CheckButton()
+        chanGrid.attach(favoriteLabel, 0, 2, 1, 1)
+        chanGrid.attach(favoriteButton, 1, 2, 2, 1)
+        return chanGrid
+
+    def cancel(self, button):
         self.destroy()
     
     def layoutCancelSubmit(self):
         self.csBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        subButt = Gtk.Button.new_with_label("Submit")
-        subButt.set_sensitive(False)
-        self.csBox.pack_end(subButt, False, False, 0)
+        self.subButt = Gtk.Button.new_with_label("Submit")
+        self.subButt.set_sensitive(False)
+        self.subButt.connect("clicked", self.parseInput)
+        self.csBox.pack_end(self.subButt, False, False, 0)
         cButt = Gtk.Button.new_with_label("Cancel")
         cButt.connect("clicked", self.cancel)
         self.csBox.pack_end(cButt, False, False, 0)
         
-        
+    def parseInput(self, button):
+        newCounter = self.root.program_counter + 1
+        print(NDProg(f"program-{newCounter}",
+               self.checkSum,
+               self.progNameEntry.get_text(),
+               self.styleCombo.get_active_text(),
+               self.catCombo.get_active_text(),
+               [],
+               self.presetButton.get_active(),
+               self.favoriteButton.get_active()))
+               
+               # you'll need to close this.
+               

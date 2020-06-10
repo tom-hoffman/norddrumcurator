@@ -1,5 +1,5 @@
-from nd1manager import *
-from programbrowser import *
+from model import *
+from constants import *
 
 # Test Data Functions
 #
@@ -16,11 +16,12 @@ def generateTestChannels(n):
 def testProgram(i):
     # (n = int) -> NDProgram
     return NDProg(f"{FILE_PREFIX}/prog{i + 1}",
-                     f"Test Program {i + 1}",
-                     STYLE[i % 4],
-                     CATEGORY[i // 10],
-                     generateTestChannels(i),
-                     False, False)
+                  0,
+                  f"Test Program {i + 1}",
+                  STYLES[i % 4],
+                  CATEGORIES[i // 10],
+                  generateTestChannels(i),
+                  False, False)
 
 def generateTestPrograms(n):
     # (n :: int) -> dict<NDProg>
