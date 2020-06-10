@@ -16,6 +16,7 @@ def addChannelBranches(store, progRow, channels):
         except IndexError:
             pass
 
+# THIS NEEDS TO BE FILES ON DISK!
 def populateMemoryTreeStore(memory, programs):
     # (MemoryWindow, memory :: list<int>,
     #  programs :: dict<int : NDProg>) -> Gtk.TreeStore
@@ -74,9 +75,13 @@ class MemoryWindow(Gtk.ApplicationWindow):
             self.importWindow = dialogs.ImportOneProgramWindow(self.app.root,
                                                                self.app.port)
             self.importWindow.set_transient_for(self)
+            self.importWindow.connect("destroy", self.redraw)
             self.importWindow.show_all()
             callback_id = GLib.timeout_add(250, self.pull_one,
                                            self.app.port)
+
+    def redraw(self, w):
+        print("REDRAW!")
 
     def pull_one(self, midi_port):
         # this is the action after a program is pulled via MIDI.

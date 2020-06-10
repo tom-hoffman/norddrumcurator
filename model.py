@@ -41,7 +41,7 @@ class DataRoot:
         self.program_counter = program_counter
     def __repr__(self):
         return f"DataRoot has {len(self.programs)} programs on disc and {len(self.memory)} in memory."
-#     def addProgram(self, program: NDProg):
-#         p = self.program_counter + 1
-#         self.programs[p] = program
-#         self.program_counter = p
+    def addProgram(self, program: NDProg):
+        p = self.program_counter + 1
+        self.programs[p] = program
+        self.program_counter = p
