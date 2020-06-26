@@ -2,8 +2,8 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
+import functions
 from constants import *
-from functions import *
 from model import * 
 
 class ImportOneProgramWindow(Gtk.Window):
@@ -45,7 +45,7 @@ class ImportOneProgramWindow(Gtk.Window):
     def layoutLoadPage(self):
         loadVBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.loadLabel = Gtk.Label("Clearing MIDI message queue...")
-        clearMidiMessages(self.midi_port)
+        functions.clearMidiMessages(self.midi_port)
         self.loadLabel.set_text("Waiting for PROG DUMP...")
         loadVBox.pack_start(self.loadLabel, False, False, 20)
         self.spinner = Gtk.Spinner()
@@ -122,6 +122,7 @@ class ImportOneProgramWindow(Gtk.Window):
         return chanGrid
 
     def parseInput(self, button):
+        # For now this also saves the data root and the file.
         nextCounter = self.root.program_counter + 1
         channels = []
         for i in range(0, 4):
@@ -138,5 +139,6 @@ class ImportOneProgramWindow(Gtk.Window):
                                     self.presetButton.get_active(),
                                     self.favoriteButton.get_active()))
         self.root.memory[self.memorySlot] = nextCounter
+        functions.save(self.root)
         self.destroy()
                

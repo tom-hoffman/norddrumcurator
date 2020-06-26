@@ -6,13 +6,13 @@ from constants import *
 
 
 def load():
-    f = open('drums.pickle', 'r')
+    f = open(PICKLE_FILENAME, 'rb')
     d = pickle.load(f)
     f.close()
     return d
 
 def save(root):
-    with open('drums.pickle', 'w') as f:
+    with open(PICKLE_FILENAME, 'wb') as f:
         f.write(pickle.dumps(root))
 
 def is_the_right_port(i):

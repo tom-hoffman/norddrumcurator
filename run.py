@@ -8,7 +8,7 @@ import mido
 
 import window
 from model import *
-from functions import *
+import functions
 
 
 class NordDrum1Manager(Gtk.Application):
@@ -16,11 +16,11 @@ class NordDrum1Manager(Gtk.Application):
     def __init__(self):
         Gtk.Application.__init__(self)
         try:
-            self.root = load()
+            self.root = functions.load()
         except FileNotFoundError:
             self.root = DataRoot({0 : NDProg('', 0, "Unknown Pleasures",
                                              "", "", "")}, [0] * 99, 0)
-        self.port = mido.open_ioport(getMidiPort())
+        self.port = mido.open_ioport(functions.getMidiPort())
 
     def do_activate(self):
         mWin = window.MemoryWindow(self)
