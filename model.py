@@ -17,15 +17,17 @@ class NDChannel:
 
 class NDProg:
     '''A Nord Drum 1 Program.'''
-    # (file :: str, chk :: int, name :: str, style :: str, category :: str,
-    #  channels :: list<NDChannel>, favorite :: bool, preset :: bool) -> NDProg
-    def __init__(self, file, chk, name, style, category,
+    # (file :: str, chk :: int, name :: str, style :: str, 
+    #  category :: str, key :: str, channels :: list<NDChannel>,
+    #  favorite :: bool, preset :: bool) -> NDProg
+    def __init__(self, file, chk, name, style, category, key,
                  channels = [], favorite = False, preset = False):
         self.file = file
         self.chk = chk
         self.name = name
         self.style = style
         self.category = category
+        self.key = key
         self.channels = channels
         self.favorite = favorite
         self.preset = preset
@@ -40,6 +42,8 @@ class DataRoot:
         self.memory = memory
         self.program_counter = program_counter
     def __repr__(self):
+        return f"Programs -> {self.programs}; Memory -> {self.memory}"
+    def __str__(self):
         return f"DataRoot has {len(self.programs)} programs on disc and {len(self.memory)} in memory."
     def addProgram(self, program: NDProg):
         p = self.program_counter + 1

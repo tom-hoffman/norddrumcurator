@@ -11,6 +11,7 @@ INSTRUMENTS = ("kick", "snare", "rack tom", "floor tom",
                "crash", "ride", "cowbell", "woodblock",
                "steel-drum", "ping", "sci fi")
 PERFORMANCE_GROUPS = ["Live 1", "Live 2", "My Kit"] + list(STYLES)
+KEYS = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
 MIDI_INTERFACE = "UM-ONE:UM-ONE MIDI 1"
 ND_CHANNEL = 4

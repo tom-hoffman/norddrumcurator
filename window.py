@@ -9,20 +9,19 @@ import dialogs
 from constants import *
 
 def addChannelBranches(store, progRow, channels):
-    for i in range(0, len(channels) - 1):
+    for i in range(0, len(channels)):
         try:
             ch = channels[i]
             store.append(progRow, [i+1, ch.name, ch.instrument, ""])
         except IndexError:
             pass
 
-# THIS NEEDS TO BE FILES ON DISK!
-def populateMemoryTreeStore(memory, programs):
+def populateFilesTreeStore(memory, programs):
     # (MemoryWindow, memory :: list<int>,
     #  programs :: dict<int : NDProg>) -> Gtk.TreeStore
     store = Gtk.TreeStore(int, str, str, str)
-    for i in range(0, len(memory) - 1):
-        prog = programs[memory[i]]  # get the right program
+    for i in range(0, len(programs)):
+        prog = programs[i]  # get the right program
         progRow = store.append(None, [i+1, prog.name,
                                       prog.style, prog.category])
         addChannelBranches(store, progRow, prog.channels)     
@@ -59,20 +58,24 @@ class MemoryWindow(Gtk.ApplicationWindow):
         # Programs on right.
         swRight = Gtk.ScrolledWindow()
         swRight.set_shadow_type(Gtk.ShadowType.IN)
-        self.store = populateMemoryTreeStore(self.app.root.memory,
-                                             self.app.root.programs)
-        tv = Gtk.TreeView()
-        tv.set_model(self.store)
-        setUpColumns(tv)
-        swRight.add(tv)
+        self.tv = Gtk.TreeView()
+        self.updatePanes()
+        setUpColumns(self.tv)
+        swRight.add(self.tv)
         paned.add2(swRight)
         
+        # ALSO UPDATE MEMORY.
+    def updatePanes(self):
+        self.store = populateFilesTreeStore(self.app.root.memory,
+                                             self.app.root.programs)
+        self.tv.set_model(self.store)
 
     def rowButtonClicked(self, button, slot, action):
         # (button :: Gtk.Button, slot :: int, action :: str) ->
         print(f"Clicked {action} for {slot}.")
         if action == "Pull":
-            self.importWindow = dialogs.ImportOneProgramWindow(self.app.root,
+            self.importWindow = dialogs.ImportOneProgramWindow(slot,
+                                                               self.app.root,
                                                                self.app.port)
             self.importWindow.set_transient_for(self)
             self.importWindow.connect("destroy", self.redraw)
@@ -81,7 +84,8 @@ class MemoryWindow(Gtk.ApplicationWindow):
                                            self.app.port)
 
     def redraw(self, w):
-        print("REDRAW!")
+        print(repr(self.app.root))
+        self.updatePanes()
 
     def pull_one(self, midi_port):
         # this is the action after a program is pulled via MIDI.
@@ -93,6 +97,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
             chk = zlib.crc32(msg.bin())
             # check to see if this is a dupe.
             # if not...
+            print(msg.data)
             self.importWindow.midiMessage = msg.data
             self.importWindow.checkSum = chk
             self.importWindow.subButt.set_sensitive(True)

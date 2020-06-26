@@ -19,7 +19,7 @@ class NordDrum1Manager(Gtk.Application):
             self.root = load()
         except FileNotFoundError:
             self.root = DataRoot({0 : NDProg('', 0, "Unknown Pleasures",
-                                             "", "")}, [0] * 99, 0)
+                                             "", "", "")}, [0] * 99, 0)
         self.port = mido.open_ioport(getMidiPort())
 
     def do_activate(self):

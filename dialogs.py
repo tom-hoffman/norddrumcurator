@@ -7,9 +7,10 @@ from functions import *
 from model import * 
 
 class ImportOneProgramWindow(Gtk.Window):
-    def __init__(self, root, midi_port):
+    def __init__(self, memorySlot, root, midi_port):
         # self: DataRoot, midi_port: mido.IOPort
         Gtk.Window.__init__(self, title="Import ONE program...")
+        self.memorySlot = memorySlot
         self.root = root
         self.midi_port = midi_port
         # stack setup
@@ -83,14 +84,21 @@ class ImportOneProgramWindow(Gtk.Window):
             self.catCombo.append_text(cat)
         self.progGrid.attach(catLabel, 0, 2, 1, 1)
         self.progGrid.attach(self.catCombo, 1, 2, 2, 1)
+        keyLabel = Gtk.Label("Key: ")
+        self.keyCombo = Gtk.ComboBoxText()
+        for key in KEYS:
+            self.keyCombo.append_text(key)
+        self.progGrid.attach(keyLabel, 0, 3, 1, 1)
+        self.progGrid.attach(self.keyCombo, 1, 3, 2, 1)
+        
         favoriteLabel = Gtk.Label("Favorite: ")
         self.favoriteButton = Gtk.CheckButton()
-        self.progGrid.attach(favoriteLabel, 0, 3, 1, 1)
-        self.progGrid.attach(self.favoriteButton, 1, 3, 2, 1)
+        self.progGrid.attach(favoriteLabel, 0, 4, 1, 1)
+        self.progGrid.attach(self.favoriteButton, 1, 4, 2, 1)
         presetLabel = Gtk.Label("Nord Preset: ")
         self.presetButton = Gtk.CheckButton()
-        self.progGrid.attach(presetLabel, 0, 4, 1, 1)
-        self.progGrid.attach(self.presetButton, 1, 4, 2, 1)
+        self.progGrid.attach(presetLabel, 0, 5, 1, 1)
+        self.progGrid.attach(self.presetButton, 1, 5, 2, 1)
         
     def layoutChannelPage(self):
         chanGrid = Gtk.Grid()
@@ -114,19 +122,21 @@ class ImportOneProgramWindow(Gtk.Window):
         return chanGrid
 
     def parseInput(self, button):
+        nextCounter = self.root.program_counter + 1
         channels = []
         for i in range(0, 4):
             channels.append(NDChannel(self.chNameEntries[i].get_text(),
                                       self.chInstrumentCombos[i].get_active_text(),
                                       self.chFavoriteButtons[i].get_active()))
-        self.root.addProgram(NDProg(f"program-{self.root.program_counter + 1}",
-               self.checkSum,
-               self.progNameEntry.get_text(),
-               self.styleCombo.get_active_text(),
-               self.catCombo.get_active_text(),
-               channels,
-               self.presetButton.get_active(),
-               self.favoriteButton.get_active()))
-        # DON'T FORGET TO ADD THIS TO MEMORY.
-               # you'll need to close this.
+        self.root.addProgram(NDProg(f"program-{nextCounter}.syx",
+                                    self.checkSum,
+                                    self.progNameEntry.get_text(),
+                                    self.styleCombo.get_active_text(),
+                                    self.catCombo.get_active_text(),
+                                    self.keyCombo.get_active_text(),
+                                    channels,
+                                    self.presetButton.get_active(),
+                                    self.favoriteButton.get_active()))
+        self.root.memory[self.memorySlot] = nextCounter
+        self.destroy()
                
