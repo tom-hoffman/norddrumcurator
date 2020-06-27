@@ -1,7 +1,10 @@
 import pickle
+from typing import List, Dict
+
 import mido
 
 import ndexceptions
+import model
 from constants import *
 
 
@@ -11,11 +14,15 @@ def load():
     f.close()
     return d
 
-def save(root):
+def save(root: model.DataRoot):
     with open(PICKLE_FILENAME, 'wb') as f:
         f.write(pickle.dumps(root))
 
-def is_the_right_port(i):
+def save_sysex(name: str, sysex: mido.Message):
+    with open(FILE_PREFIX + name, 'xb') as f:
+        f.write(sysex.bin())
+
+def is_the_right_port(i: List):
     return MIDI_INTERFACE in i
 
 def getMidiPort():
@@ -27,13 +34,11 @@ def getMidiPort():
         raise ndexceptions.MidiInterfaceNotFound(MIDI_INTERFACE, mido.get_input_names())
 
 def clearMidiMessages(port):
-    # (port :: mido.IOPort ->
     for msg in port.iter_pending():
         print(msg)
     print("Queue clear.")
 
-def programMatch(newCheck, progDict):
-    # (newCheck :: int, dict<NDProg>) -> int
+def programMatch(newCheck: int, progDict: Dict):
     # -1 is no match (ug)
     match = -1
     for k, v in progDict.items():

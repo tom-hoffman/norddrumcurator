@@ -10,6 +10,7 @@ class ImportOneProgramWindow(Gtk.Window):
     def __init__(self, memorySlot, root, midi_port):
         # self: DataRoot, midi_port: mido.IOPort
         Gtk.Window.__init__(self, title="Import ONE program...")
+        self.set_modal(True)
         self.memorySlot = memorySlot
         self.root = root
         self.midi_port = midi_port
@@ -129,7 +130,8 @@ class ImportOneProgramWindow(Gtk.Window):
             channels.append(NDChannel(self.chNameEntries[i].get_text(),
                                       self.chInstrumentCombos[i].get_active_text(),
                                       self.chFavoriteButtons[i].get_active()))
-        self.root.addProgram(NDProg(f"program-{nextCounter}.syx",
+        newFileName = f"program-{nextCounter}.syx"
+        self.root.addProgram(NDProg(newFileName,
                                     self.checkSum,
                                     self.progNameEntry.get_text(),
                                     self.styleCombo.get_active_text(),
@@ -139,6 +141,8 @@ class ImportOneProgramWindow(Gtk.Window):
                                     self.presetButton.get_active(),
                                     self.favoriteButton.get_active()))
         self.root.memory[self.memorySlot] = nextCounter
+        # saving...
         functions.save(self.root)
+        functions.save_sysex(newFileName, self.midiMessage)
         self.destroy()
                
