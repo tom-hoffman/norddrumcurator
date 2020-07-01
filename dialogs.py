@@ -123,7 +123,6 @@ class ImportOneProgramWindow(Gtk.Window):
         return chanGrid
 
     def parseInput(self, button):
-        # For now this also saves the data root and the file.
         nextCounter = self.root.program_counter + 1
         channels = []
         for i in range(0, 4):
@@ -141,7 +140,6 @@ class ImportOneProgramWindow(Gtk.Window):
                                     self.presetButton.get_active(),
                                     self.favoriteButton.get_active()))
         self.root.memory[self.memorySlot] = nextCounter
-        # saving...
         functions.save(self.root)
         functions.save_sysex(newFileName, self.midiMessage)
         self.destroy()

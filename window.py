@@ -6,29 +6,30 @@ from gi.repository import Gtk
 from gi.repository import GLib
 
 import dialogs
+import functions
 from constants import *
 
 def addChannelBranches(store, progRow, channels):
     for i in range(0, len(channels)):
         try:
             ch = channels[i]
-            store.append(progRow, [i+1, ch.name, ch.instrument, ""])
+            store.append(progRow, [ch.name, ch.instrument, ""])
         except IndexError:
             pass
 
 def populateFilesTreeStore(memory, programs):
     # (MemoryWindow, memory :: list<int>,
     #  programs :: dict<int : NDProg>) -> Gtk.TreeStore
-    store = Gtk.TreeStore(int, str, str, str)
+    store = Gtk.TreeStore(str, str, str)
     for i in range(0, len(programs)):
         prog = programs[i]  # get the right program
-        progRow = store.append(None, [i+1, prog.name,
+        progRow = store.append(None, [prog.name,
                                       prog.style, prog.category])
         addChannelBranches(store, progRow, prog.channels)     
     return store
 
 def setUpColumns(tv):
-    colHeaders = ["Number", "Name", "Style/Instrument", "Category"]
+    colHeaders = ["Name", "Style/Instrument", "Category"]
     for i in range(0, len(colHeaders)):
         tv.append_column(Gtk.TreeViewColumn(colHeaders[i], 
                                             Gtk.CellRendererText(),
@@ -70,22 +71,31 @@ class MemoryWindow(Gtk.ApplicationWindow):
                                              self.app.root.programs)
         self.progTree.set_model(self.store)
 
+    def getActiveRowBox(self):
+        return self.memList.get_selected_row().get_child().get_children()
+
+    def getActiveMemoryIndex(self, rBox):
+        return int(rBox[0].get_text())
+
     def updateMemoryList(self):
         # this is a bit insane, context-wise.
-        r = self.memList.get_selected_row()
-        rBox = r.get_child().get_children()
+        m = self.app.root.memory
+        p = self.app.root.programs
+        rBox = self.getActiveRowBox()
         oldLabel = rBox[1]
-        progIndex = self.app.root.memory[int(rBox[0].get_text()) - 1]
-        oldLabel.set_label(self.app.root.programs[progIndex].name)
+        progIndex = self.getActiveMemoryIndex(rBox)
+        oldLabel.set_label(p[m[progIndex]].name)
 
     def redraw(self, w):
+        # also saving...
+        functions.save(self.app.root)
         self.updateProgTree()
         self.updateMemoryList()
 
     def memRowLabels(self, i):
         # (i :: int) -> Gtk.Hbox
         p = self.getProgramFromMemory(i)
-        labels = [str(i + 1), p.name]
+        labels = [str(i), p.name]
         hb = Gtk.HBox()
         for l in labels:
             hb.pack_start(Gtk.Label(l), expand = True, fill = True, padding = 10)
@@ -115,7 +125,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
         
     def populateMemoryRows(self):
         slots = self.app.root.memory
-        for i in range(0, len(slots)):
+        for i in range(1, len(slots)):
             self.memList.add(self.buildMemoryRow(i))
 
     def rowButtonClicked(self, button, slot, action):
@@ -133,6 +143,8 @@ class MemoryWindow(Gtk.ApplicationWindow):
             callback_id = GLib.timeout_add(250, self.pull_one,
                                            self.app.port)
 
+
+
     def pull_one(self, midi_port):
         # this is the action after a program is pulled via MIDI.
         msg = midi_port.poll()
@@ -142,18 +154,24 @@ class MemoryWindow(Gtk.ApplicationWindow):
             iw = self.importWindow
             chk = zlib.crc32(msg.bin())
             # check to see if this is a dupe.
-            # if not...
-            iw.midiMessage = msg
-            iw.checkSum = chk
-            iw.subButt.set_sensitive(True)
-            sw = Gtk.StackSwitcher()
-            sw.set_stack(iw.stack)
-            sw.show()
-            iw.loadLabel.set_text("Enter program metadata.")
-            iw.spinner.stop()
-            iw.stack.set_visible_child_name("prog_page")
-            iw.outerVBox.pack_start(sw, True, True, 0)
-            iw.outerVBox.reorder_child(sw, 0)
+            match = functions.programMatch(chk, self.app.root.programs)
+            if match == -1:
+                iw.midiMessage = msg
+                iw.checkSum = chk
+                iw.subButt.set_sensitive(True)
+                sw = Gtk.StackSwitcher()
+                sw.set_stack(iw.stack)
+                sw.show()
+                iw.loadLabel.set_text("Enter program metadata.")
+                iw.spinner.stop()
+                iw.stack.set_visible_child_name("prog_page")
+                iw.outerVBox.pack_start(sw, True, True, 0)
+                iw.outerVBox.reorder_child(sw, 0)
+            else:
+                rBox = self.getActiveRowBox()
+                self.app.root.memory[self.getActiveMemoryIndex(rBox)] = match 
+                print(f"Setting row {self.getActiveMemoryIndex(rBox)} to {match}.")
+                iw.destroy()
             return False
         else:
             return True
