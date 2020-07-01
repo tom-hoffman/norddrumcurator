@@ -140,6 +140,8 @@ class ImportOneProgramWindow(Gtk.Window):
                                     self.presetButton.get_active(),
                                     self.favoriteButton.get_active()))
         self.root.memory[self.memorySlot] = nextCounter
+        self.root.cache_status[self.memorySlot] = "checked"
+
         functions.save(self.root)
         functions.save_sysex(newFileName, self.midiMessage)
         self.destroy()

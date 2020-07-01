@@ -37,10 +37,14 @@ class NDProg:
 class DataRoot:
     '''Top level container for the data objects.'''
     # NOTE: The memory list starts with a dummy value at index 0.
-    def __init__(self, programs: Dict[int, NDProg],
-                 memory: List[int], program_counter: int):
+    def __init__(self,
+                 programs: Dict[int, NDProg],
+                 memory: List[int],
+                 cache_status: List[str],
+                 program_counter: int):
         self.programs = programs
         self.memory = memory
+        self.cache_status = cache_status
         self.program_counter = program_counter
     def __repr__(self):
         return f"Programs -> {self.programs}; Memory -> {self.memory}"

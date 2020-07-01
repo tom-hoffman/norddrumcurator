@@ -85,6 +85,9 @@ class MemoryWindow(Gtk.ApplicationWindow):
         oldLabel = rBox[1]
         progIndex = self.getActiveMemoryIndex(rBox)
         oldLabel.set_label(p[m[progIndex]].name)
+        css = self.memList.get_selected_row().get_child().get_style_context()
+        css.add_class(self.app.root.cache_status[progIndex])
+
 
     def redraw(self, w):
         # also saving...
@@ -97,6 +100,8 @@ class MemoryWindow(Gtk.ApplicationWindow):
         p = self.getProgramFromMemory(i)
         labels = [str(i), p.name]
         hb = Gtk.HBox()
+        css = hb.get_style_context()
+        css.add_class(self.app.root.cache_status[i])
         for l in labels:
             hb.pack_start(Gtk.Label(l), expand = True, fill = True, padding = 10)
         return hb
@@ -156,6 +161,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
             # check to see if this is a dupe.
             match = functions.programMatch(chk, self.app.root.programs)
             if match == -1:
+                # if not a dupe.
                 iw.midiMessage = msg
                 iw.checkSum = chk
                 iw.subButt.set_sensitive(True)
@@ -168,9 +174,11 @@ class MemoryWindow(Gtk.ApplicationWindow):
                 iw.outerVBox.pack_start(sw, True, True, 0)
                 iw.outerVBox.reorder_child(sw, 0)
             else:
+                # if it is a dupe.
                 rBox = self.getActiveRowBox()
-                self.app.root.memory[self.getActiveMemoryIndex(rBox)] = match 
-                print(f"Setting row {self.getActiveMemoryIndex(rBox)} to {match}.")
+                i = self.getActiveMemoryIndex(rBox)
+                self.app.root.memory[i] = match
+                self.app.root.cache_status[i] = "checked"
                 iw.destroy()
             return False
         else:

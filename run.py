@@ -19,8 +19,15 @@ class NordDrum1Manager(Gtk.Application):
             self.root = functions.load()
         except FileNotFoundError:
             # Note that the memory list has an extra value at index 0.
-            self.root = DataRoot({0 : NDProg('', 0, "Unknown Pleasures",
-                                             "", "", "")}, [0] * 100, 0)
+            self.root = DataRoot({0 : NDProg('',
+                                             0,
+                                             "Unknown Pleasures",
+                                             "",
+                                             "",
+                                             "")},
+                                 [0] * 100,
+                                 ["unknown"] * 100,
+                                 0)
         self.port = mido.open_ioport(functions.getMidiPort())
 
     def do_activate(self):

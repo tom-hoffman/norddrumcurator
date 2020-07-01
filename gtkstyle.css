@@ -2,6 +2,13 @@ window {
     background-color : #A5ACBA;
 }
 
-window.headerbar {
-  background-color : #94000B;
-  }
+box.checked {
+    background-color : #ACBAA5;
+}
+
+box.dirty {
+    background-color : #B3A5BA;
+}
+
+
+    
