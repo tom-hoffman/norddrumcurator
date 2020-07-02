@@ -14,9 +14,10 @@ import functions
 class NordDrum1Manager(Gtk.Application):
     '''I don't entirely understand this.'''
     def __init__(self):
-        Gtk.Application.__init__(self)
         try:
             self.root = functions.load()
+            self.root.cache_status = list(map(self.resetStatus,
+                                         self.root.cache_status))
         except FileNotFoundError:
             # Note that the memory list has an extra value at index 0.
             self.root = DataRoot({0 : NDProg('',
@@ -29,6 +30,13 @@ class NordDrum1Manager(Gtk.Application):
                                  ["unknown"] * 100,
                                  0)
         self.port = mido.open_ioport(functions.getMidiPort())
+        Gtk.Application.__init__(self)
+
+    def resetStatus(self, s):
+        if s == "checked":
+            return "unknown"
+        else:
+            return s
 
     def do_activate(self):
         mWin = window.MemoryWindow(self)
