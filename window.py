@@ -61,11 +61,22 @@ class MemoryWindow(Gtk.ApplicationWindow):
         swRight = Gtk.ScrolledWindow()
         swRight.set_shadow_type(Gtk.ShadowType.IN)
         self.progTree = Gtk.TreeView()
+        self.progTree.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK,
+                                               [('text/plain', 0, 0)], Gdk.DragAction.COPY)
+        self.progTree.connect('drag-begin', self.tree_drag_begin)
+        self.progTree.connect('drag-data-get', self.tree_drag_data_get)
         self.updateProgTree()
         setUpColumns(self.progTree)
         swRight.add(self.progTree)
         paned.add2(swRight)
-
+    
+    def tree_drag_begin(self, treeview, context):
+        print(f'Beginning drag from {treeview}.')
+    
+    def tree_drag_data_get(self, treeview, context, selection, info, timestamp):
+        # The aim here is to do selection.set(
+        selection.set_text("hi", -1)
+    
     def updateProgTree(self):
         self.store = populateFilesTreeStore(self.app.root.memory,
                                              self.app.root.programs)
@@ -104,8 +115,15 @@ class MemoryWindow(Gtk.ApplicationWindow):
         css.add_class(self.app.root.cache_status[i])
         for l in labels:
             hb.pack_start(Gtk.Label(l), expand = True, fill = True, padding = 10)
+        hb.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.COPY)
+        hb.drag_dest_add_text_targets()
+        hb.connect("drag-data-received", self.on_drag_data_received)
         return hb
-    
+
+    def on_drag_data_received(self, widget, drag_context, x, y, data, info, time):
+        text = data.get_text()
+        print("Received text: %s" % text)
+
     def memRowButtons(self, hb, slot):
         # (hb :: Gtk.HBox, slot :: int) -> 
         # Adds buttons to hb (HBox).
