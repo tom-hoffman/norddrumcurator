@@ -51,6 +51,7 @@ class DataRoot:
     def __str__(self):
         return f"DataRoot has {len(self.programs)} programs on disc and {len(self.memory)} in memory."
     def addProgram(self, program: NDProg):
+        # XXX Check to see if name is a dupe.
         p = self.program_counter + 1
         self.programs[p] = program
         self.program_counter = p
