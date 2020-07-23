@@ -33,7 +33,7 @@ class ImportOneProgramWindow(Gtk.Window):
         self.chInstrumentCombos = []
         self.chFavoriteButtons = []
         for i in range(1, 5):
-            self.stack.add_titled(self.layoutChannelPage(),
+            self.stack.add_titled(self.layoutChannelPage(i),
                                   f"chan_{i}_page", f"CH{i}")
         # putting it together
         self.outerVBox.pack_start(self.stack, True, True, 0)
@@ -101,10 +101,12 @@ class ImportOneProgramWindow(Gtk.Window):
         self.progGrid.attach(presetLabel, 0, 5, 1, 1)
         self.progGrid.attach(self.presetButton, 1, 5, 2, 1)
         
-    def layoutChannelPage(self):
+    def layoutChannelPage(self, i):
         chanGrid = Gtk.Grid()
         nameLabel = Gtk.Label("Name: ")
         nameEntry = Gtk.Entry()
+        nameEntry.set_text(f"CH{i}")
+        nameEntry.set_editable(False)
         chanGrid.attach(nameLabel, 0, 0, 1, 1)
         chanGrid.attach(nameEntry, 1, 0, 2, 1)
         self.chNameEntries.append(nameEntry)

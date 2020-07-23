@@ -1,19 +1,27 @@
 from typing import List, Dict
 
+from constants import *
+
 #
 # Data model
 #
 
+
 class NDChannel:
     '''A Nord Drum 1 Channel.'''
-    def __init__(self, name: str = "",
-                 instrument: str = "",
+    def __init__(self, name: str = "CH?",
+                 instrument: str = "unknown",
                  favorite: bool = False):
         self.name = name
         self.instrument = instrument
         self.favorite = favorite
     def __repr__(self):
-        return f"{self.name} {self.instrument}."
+        return f"{self.name}: {self.instrument}."
+
+def generate_default_channels(name):
+    return NDChannel(name, "unknown", False)
+
+DEFAULT_CHANNELS = tuple(map(generate_default_channels, CHANNEL_NAMES))
 
 class NDProg:
     '''A Nord Drum 1 Program.'''
@@ -21,7 +29,7 @@ class NDProg:
     #  category :: str, key :: str, channels :: list<NDChannel>,
     #  favorite :: bool, preset :: bool) -> NDProg
     def __init__(self, file, chk, name, style, category, key,
-                 channels = [], favorite = False, preset = False):
+                 channels = DEFAULT_CHANNELS, favorite = False, preset = False):
         self.file = file
         self.chk = chk
         self.name = name

@@ -1,6 +1,8 @@
 Nord Drum Curator
 =================
 
+To be clear, this project does not yet work.
+
 The original, somewhat short lived, Nord Drum 1 has no utilities for managing drum programs, unlike the subsequent Nord Drum 2 and 3p.
 
 The Nord Drum 1 memory holds 99 programs in a single bank.

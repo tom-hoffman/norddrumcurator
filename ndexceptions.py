@@ -3,6 +3,7 @@ class NDError(Exception):
 
 class MidiInterfaceNotFound(NDError):
     def __init__(self, correct, l):
+        NDError.__init__()
         self.correct = correct
         self.l = l
     def __str__(self):

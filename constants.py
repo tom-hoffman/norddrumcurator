@@ -10,10 +10,15 @@ CATEGORIES = ("drums", "percussion", "kit")
 INSTRUMENTS = ("kick", "snare", "rack tom", "floor tom",
                "closed hat", "open hat", "other hat",
                "crash", "ride", "cowbell", "woodblock",
-               "steel-drum", "ping", "sci fi")
+               "steel-drum", "ping", "sci fi", "unknown")
 PERFORMANCE_GROUPS = ["Live 1", "Live 2", "My Kit"] + list(STYLES)
-KEYS = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+KEYS = ("None", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 CACHE_STATUSES = ("checked", "dirty", "unknown")
+COLUMN_HEADERS = ("Name", "Style/Instrument", "Category")
+ACTIONS = ("Pull", "Push")
+
+
+CHANNEL_NAMES = ("CH1", "CH2", "CH3", "CH4")
 
 MIDI_INTERFACE = "UM-ONE:UM-ONE MIDI 1"
 ND_CHANNEL = 4

@@ -10,6 +10,8 @@ import functions
 from constants import *
 from ndexceptions import *
 
+# Screen layout helper functions.
+
 def addChannelBranches(store, progRow, channels):
     for i in range(0, len(channels)):
         try:
@@ -30,9 +32,8 @@ def populateFilesTreeStore(memory, programs):
     return store
 
 def setUpColumns(tv):
-    colHeaders = ["Name", "Style/Instrument", "Category"]
-    for i in range(0, len(colHeaders)):
-        tv.append_column(Gtk.TreeViewColumn(colHeaders[i], 
+    for i in range(0, len(COLUMN_HEADERS)):
+        tv.append_column(Gtk.TreeViewColumn(COLUMN_HEADERS[i], 
                                             Gtk.CellRendererText(),
                                             text = i))
 
@@ -70,32 +71,41 @@ class MemoryWindow(Gtk.ApplicationWindow):
         setUpColumns(self.progTree)
         swRight.add(self.progTree)
         paned.add2(swRight)
-    
-    def tree_drag_begin(self, treeview, context):
-        print(f'Beginning drag from {treeview}.')
+
+    def redraw(self, w, memRow=None):
+        # (w :: Gtk.Window, memRow :: Gtk.Hbox)
+        # memRow is an unselected row you need to redraw.
+        # also saving...
+        functions.save(self.app.root)
+        self.updateProgTree()
+        self.updateMemoryList(memRow)
 
     def getProgramIndexFromName(self, name: str) -> int:
+        # Returns -1 if the program name does not match.
         i = -1
         for key, value in self.app.root.programs.items():
             if name == value.name:
                 i = key
-        if i == -1:
-            raise NDError
         else:
             return i
 
     def getProgramNameFromTreeSelection(self) -> str:
         (store, treeIter) = self.progTree.get_selection().get_selected()
-        return str(list(store[treeIter])[0])
+        return str(list(store[treeIter])[0])     
     
     def getProgramIndexFromTreeSelection(self):
         return(self.getProgramIndexFromName(
             self.getProgramNameFromTreeSelection()))
-    
+ 
     def tree_drag_data_get(self, treeview, context, data, info, timestamp):
         # Getting the key of the selected branch.
-        # This should ensure it is a program not a channel.
-        data.set_text(str(self.getProgramIndexFromTreeSelection()), -1)
+        # XXX need to get the parent if this is a channel.
+        i = str(self.getProgramIndexFromTreeSelection())
+        if i == -1:
+            # get the parent of the channel.
+            raise NDError
+        else:
+            data.set_text(i, -1)
     
     def updateProgTree(self):
         self.store = populateFilesTreeStore(self.app.root.memory,
@@ -107,6 +117,10 @@ class MemoryWindow(Gtk.ApplicationWindow):
 
     def getActiveMemoryIndex(self, rBox):
         return int(rBox.get_children()[0].get_text())
+
+    def getProgramFromMemory(self, m):
+        # (memory :: int) -> NDProgram
+        return self.app.root.programs[self.app.root.memory[m]]
 
     def updateMemoryList(self, rBox = None):
         # this is a bit insane, context-wise.
@@ -122,13 +136,18 @@ class MemoryWindow(Gtk.ApplicationWindow):
         css = rBox.get_style_context()
         css.add_class(self.app.root.cache_status[progIndex])
 
-    def redraw(self, w, memRow=None):
-        # (w :: Gtk.Window, memRow :: Gtk.Hbox)
-        # memRow is an unselected row you need to redraw.
-        # also saving...
-        functions.save(self.app.root)
-        self.updateProgTree()
-        self.updateMemoryList(memRow)
+    def buildMemoryRow(self, i):
+        # (i :: int) -> Gtk.ListBoxRow
+        r = Gtk.ListBoxRow()
+        hb = self.memRowLabels(i)
+        self.memRowButtons(hb, i)
+        r.add(hb)
+        return r
+        
+    def populateMemoryRows(self):
+        slots = self.app.root.memory
+        for i in range(1, len(slots)):
+            self.memList.add(self.buildMemoryRow(i))
 
     def memRowLabels(self, i):
         # (i :: int) -> Gtk.Hbox
@@ -148,6 +167,11 @@ class MemoryWindow(Gtk.ApplicationWindow):
     def getMemSlotFromHBox(self, widget):
         return int(widget.get_children()[0].get_text())
 
+# Drag and drop handlers.
+
+    def tree_drag_begin(self, treeview, context):
+        print(f'Beginning drag from {treeview}.')
+
     def on_drag_data_received(self, widget, drag_context, x, y,
                               data, info, time):
         text = data.get_text()
@@ -158,12 +182,10 @@ class MemoryWindow(Gtk.ApplicationWindow):
         self.app.root.cache_status[slot] = "dirty"
         self.redraw(None, widget)
         
-
     def memRowButtons(self, hb, slot):
         # (hb :: Gtk.HBox, slot :: int) -> 
         # Adds buttons to hb (HBox).
-        actions = ["Push", "Pick"]
-        for b in actions:
+        for b in ACTIONS:
             lab = Gtk.Label(b)
             lab.set_padding(2, 2)
             but = Gtk.Button()
@@ -172,18 +194,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
             but.connect("clicked", self.rowButtonClicked, slot, b)
             hb.pack_end(but, expand = False, fill = False, padding = 2)
 
-    def buildMemoryRow(self, i):
-        # (i :: int) -> Gtk.ListBoxRow
-        r = Gtk.ListBoxRow()
-        hb = self.memRowLabels(i)
-        self.memRowButtons(hb, i)
-        r.add(hb)
-        return r
-        
-    def populateMemoryRows(self):
-        slots = self.app.root.memory
-        for i in range(1, len(slots)):
-            self.memList.add(self.buildMemoryRow(i))
+# Button handlers.
 
     def rowButtonClicked(self, button, slot, action):
         # (button :: Gtk.Button, slot :: int, action :: str) ->
@@ -200,7 +211,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
             callback_id = GLib.timeout_add(250, self.pull_one,
                                            self.app.port)
 
-
+# Midi pull action.
 
     def pull_one(self, midi_port):
         # this is the action after a program is pulled via MIDI.
@@ -227,7 +238,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
                 iw.outerVBox.reorder_child(sw, 0)
             else:
                 # if it is a dupe.
-                rBox = self.getActiveRowBox().get_children()
+                rBox = self.getActiveRowBox()
                 i = self.getActiveMemoryIndex(rBox)
                 self.app.root.memory[i] = match
                 self.app.root.cache_status[i] = "checked"
@@ -236,7 +247,5 @@ class MemoryWindow(Gtk.ApplicationWindow):
         else:
             return True
 
-    def getProgramFromMemory(self, m):
-        # (memory :: int) -> NDProgram
-        return self.app.root.programs[self.app.root.memory[m]]
+
 

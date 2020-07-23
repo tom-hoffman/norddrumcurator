@@ -7,7 +7,7 @@ import ndexceptions
 import model
 from constants import *
 
-
+    
 def load():
     f = open(PICKLE_FILENAME, 'rb')
     d = pickle.load(f)
