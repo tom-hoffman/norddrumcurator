@@ -86,8 +86,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
         for key, value in self.app.root.programs.items():
             if name == value.name:
                 i = key
-        else:
-            return i
+        return i
 
     def getProgramNameFromTreeSelection(self) -> str:
         (store, treeIter) = self.progTree.get_selection().get_selected()
@@ -99,11 +98,10 @@ class MemoryWindow(Gtk.ApplicationWindow):
  
     def tree_drag_data_get(self, treeview, context, data, info, timestamp):
         # Getting the key of the selected branch.
-        # XXX need to get the parent if this is a channel.
         i = str(self.getProgramIndexFromTreeSelection())
         if i == -1:
-            # get the parent of the channel.
-            raise NDError
+            # spawn a Gtk.MessageDialog
+            print("ERROR")
         else:
             data.set_text(i, -1)
     
@@ -175,12 +173,22 @@ class MemoryWindow(Gtk.ApplicationWindow):
     def on_drag_data_received(self, widget, drag_context, x, y,
                               data, info, time):
         text = data.get_text()
-        slot = self.getMemSlotFromHBox(widget)
-        print(f"Received program {text} for memory slot {slot}.")
-        prog = int(text)
-        self.app.root.memory[slot] = prog
-        self.app.root.cache_status[slot] = "dirty"
-        self.redraw(None, widget)
+        if text != "-1":
+            slot = self.getMemSlotFromHBox(widget)
+            print(f"Received program {text} for memory slot {slot}.")
+            prog = int(text)
+            self.app.root.memory[slot] = prog
+            self.app.root.cache_status[slot] = "dirty"
+            self.redraw(None, widget)
+        else:
+            warn = Gtk.MessageDialog(
+                transient_for = self,
+                flags = 0,
+                message_type = Gtk.MessageType.ERROR,
+                buttons=Gtk.ButtonsType.OK,
+                text="You cannot drag a channel")
+            warn.run()
+            warn.destroy()
         
     def memRowButtons(self, hb, slot):
         # (hb :: Gtk.HBox, slot :: int) -> 
