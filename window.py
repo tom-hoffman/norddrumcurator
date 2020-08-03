@@ -99,11 +99,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
     def tree_drag_data_get(self, treeview, context, data, info, timestamp):
         # Getting the key of the selected branch.
         i = str(self.getProgramIndexFromTreeSelection())
-        if i == -1:
-            # spawn a Gtk.MessageDialog
-            print("ERROR")
-        else:
-            data.set_text(i, -1)
+        data.set_text(i, -1)
     
     def updateProgTree(self):
         self.store = populateFilesTreeStore(self.app.root.memory,

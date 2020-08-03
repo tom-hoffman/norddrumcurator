@@ -9,6 +9,7 @@ import mido
 import window
 from model import *
 import functions
+import constants
 
 
 class NordDrum1Manager(Gtk.Application):
@@ -20,12 +21,7 @@ class NordDrum1Manager(Gtk.Application):
                                          self.root.cache_status))
         except FileNotFoundError:
             # Note that the memory list has an extra value at index 0.
-            self.root = DataRoot({0 : NDProg('',
-                                             0,
-                                             "Unknown Pleasures",
-                                             "",
-                                             "",
-                                             "")},
+            self.root = DataRoot({0 : UNKNOWN_PLEASURES},
                                  [0] * 100,
                                  ["unknown"] * 100,
                                  0)

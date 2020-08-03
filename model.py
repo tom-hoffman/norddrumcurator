@@ -42,6 +42,13 @@ class NDProg:
     def __repr__(self):
         return f"NDProg: {self.name} with {len(self.channels)} channels."
 
+UNKNOWN_PLEASURES = NDProg('',
+                           0,
+                           "Unknown Pleasures",
+                           "",
+                           "",
+                           "")
+
 class DataRoot:
     '''Top level container for the data objects.'''
     # NOTE: The memory list starts with a dummy value at index 0.

@@ -7,7 +7,8 @@ import ndexceptions
 import model
 from constants import *
 
-    
+# Load/save data root
+
 def load():
     f = open(PICKLE_FILENAME, 'rb')
     d = pickle.load(f)
@@ -18,9 +19,7 @@ def save(root: model.DataRoot):
     with open(PICKLE_FILENAME, 'wb') as f:
         f.write(pickle.dumps(root))
 
-def save_sysex(name: str, sysex: mido.Message):
-    with open(FILE_PREFIX + name, 'xb') as f:
-        f.write(sysex.bin())
+# MIDI functions
 
 def is_the_right_port(i: List):
     return MIDI_INTERFACE in i
@@ -37,6 +36,16 @@ def clearMidiMessages(port):
     for msg in port.iter_pending():
         print(msg)
     print("Queue clear.")
+
+def save_sysex(name: str, sysex: mido.Message):
+    with open(FILE_PREFIX + name, 'xb') as f:
+        f.write(sysex.bin())
+
+def read_sysex(file_name: str) -> mido.Message:
+    with open(FILE_PREFIX + file_name, 'rb') as f:
+        return f.read()
+
+# Misc utility functions.
 
 def programMatch(newCheck: int, progDict: Dict):
     # -1 is no match (ug)

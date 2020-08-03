@@ -19,19 +19,23 @@ def testProgram(i):
                   0,
                   f"Test Program {i + 1}",
                   STYLES[i % 4],
-                  CATEGORIES[i // 10],
+                  CATEGORIES[i % 3],
+                  None,
                   generateTestChannels(i),
                   False, False)
 
 def generateTestPrograms(n):
     # (n :: int) -> dict<NDProg>
-    return {i + 1 : testProgram(i) for i in range(0, n)}
+    d = {i + 1 : testProgram(i) for i in range(0, n)}
+    d[0] = UNKNOWN_PLEASURES
+    return d
         
 def generateTestData(n):
     # (ch_count :: int) -> DataRoot
     pDict = generateTestPrograms(n)
     mem = list(range(1, n+1))
-    return DataRoot(pDict, mem, n)
+    caches = ['dirty'] * n
+    return DataRoot(pDict, mem, caches, n)
 
 
 

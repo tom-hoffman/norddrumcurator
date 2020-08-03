@@ -16,12 +16,11 @@ KEYS = ("None", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 CACHE_STATUSES = ("checked", "dirty", "unknown")
 COLUMN_HEADERS = ("Name", "Style/Instrument", "Category")
 ACTIONS = ("Pull", "Push")
-
-
 CHANNEL_NAMES = ("CH1", "CH2", "CH3", "CH4")
 
+
 MIDI_INTERFACE = "UM-ONE:UM-ONE MIDI 1"
-ND_CHANNEL = 4
+ND_CHANNEL = 1
 
 CSS_PATH = 'gtkstyle.css'
 CSS = Gtk.CssProvider()
