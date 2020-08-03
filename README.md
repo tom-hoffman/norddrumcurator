@@ -1,8 +1,6 @@
 Nord Drum Curator
 =================
 
-To be clear, this project does not yet work.
-
 The original, somewhat short lived, Nord Drum 1 has no utilities for managing drum programs, unlike the subsequent Nord Drum 2 and 3p.
 
 The Nord Drum 1 memory holds 99 programs in a single bank.
@@ -16,6 +14,27 @@ The basic model for the interface is a double paned window, where the left pane 
 My intention is to be able to rearrange the programs in memory on the left pane and then upload the changes to the ND1 in as automatic a process as possible.
 
 This will all be managed via SYSEX messages to and from the ND1.  Unfortunately the actual binary format used by the ND1 does some kind of tricky checksumming that hasn't been reverse engineered completely, so this all isn't as clever or powerful as it could be.
+
+Current Status
+--------------
+
+As of 8/3/2020, I'm calling this Milestone 1, although I'm not doing a package, branch, release or whatever.
+
+What works:
+
+ * Pulling and saving a program from your Nord Drum.
+ * Entering metadata when you pull the program.
+ * Dragging and dropping an imported program into a different memory location.
+ * Pushing the program to its new location on the Nord Drum.
+
+In short, it is now useful. I'm going to use it like this for a little while and next priorities will come 
+
+Dependencies
+------------
+
+ * Python 3
+ * mido (Python MIDI library)
+ * PyGTK 3.0 
 
 To start with the interactive GTK debugger:
 

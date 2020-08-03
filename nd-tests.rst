@@ -40,7 +40,7 @@ A reference for implementing this in the main code later.
     >>> import pickle
     >>> t = tempfile.TemporaryFile()
     >>> t.write(pickle.dumps(tdr)) # output not significant
-    7512
+    7534
     >>> t.seek(0) 
     0
     >>> loaded = pickle.load(t)

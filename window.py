@@ -203,6 +203,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
     def rowButtonClicked(self, button, slot, action):
         # (button :: Gtk.Button, slot :: int, action :: str) ->
         print(f"Clicked {action} for {slot}.")
+        functions.sendMidiProgramChange(self.app.port, slot)
         r = button.get_parent().get_parent()
         self.memList.select_row(r)
         if action == "Pull":
@@ -215,13 +216,9 @@ class MemoryWindow(Gtk.ApplicationWindow):
             callback_id = GLib.timeout_add(250, self.pull_one,
                                            self.app.port)
         if action == "Push":
-            functions.sendMidiProgramChange(self.app.port, slot)
-            p = self.getProgramFromMemory(slot)
-            print(f"Program {p.file}.")
-            #functions.sendMidiProgramChange(
-            
-# def pushProgram(port: mido.ports.IOPort,
-#                 file: str):
+            f = self.getProgramFromMemory(slot).file
+            functions.pushProgram(self.app.port, f)
+
 # Midi pull action.
 
     def pull_one(self, midi_port):

@@ -38,12 +38,11 @@ def clearMidiMessages(port):
     print("Queue clear.")
 
 def save_sysex(name: str, sysex: mido.Message):
-    with open(FILE_PREFIX + name, 'xb') as f:
-        f.write(sysex.bin())
+    print(f"Writing: {sysex}")
+    mido.write_syx_file(FILE_PREFIX + name, [sysex])
 
 def read_sysex(file_name: str) -> mido.Message:
-    with open(FILE_PREFIX + file_name, 'rb') as f:
-        return f.read()
+    return mido.read_syx_file(FILE_PREFIX + file_name)[0]
 
 def sendMidiProgramChange(port: mido.ports.IOPort,
                     program: int):
@@ -54,7 +53,10 @@ def sendMidiProgramChange(port: mido.ports.IOPort,
 
 def pushProgram(port: mido.ports.IOPort,
                 file: str):
-    print(file)
+    syx = read_sysex(file)
+    print(syx)
+    #port.send(mido.Message('sysex', data = [syx.data]))
+    port.send(syx)
 
 def midiConfirm(port: mido.ports.IOPort):
     for n in CHANNEL_NUMBERS:
