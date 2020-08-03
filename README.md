@@ -13,12 +13,12 @@ The basic model for the interface is a double paned window, where the left pane 
 
 My intention is to be able to rearrange the programs in memory on the left pane and then upload the changes to the ND1 in as automatic a process as possible.
 
-This will all be managed via SYSEX messages to and from the ND1.  Unfortunately the actual binary format used by the ND1 does some kind of tricky checksumming that hasn't been reverse engineered completely, so this all isn't as clever or powerful as it could be.
+This will all be managed via SYSEX messages to and from the ND1.  Unfortunately the actual binary format used by the ND1 does some kind of tricky checksumming that hasn't been reverse engineered completely.  Without that, we can't actually edit the programs themselves outside the ND1.
 
 Current Status
 --------------
 
-As of 8/3/2020, I'm calling this Milestone 1, although I'm not doing a package, branch, release or whatever.
+As of 8/3/2020, I'm calling this Milestone 1, although I'm not doing a package, branch, release or whatever. I'll try to make sure a checkout on the master branch always runs.
 
 What works:
 
@@ -28,6 +28,13 @@ What works:
  * Pushing the program to its new location on the Nord Drum.
 
 In short, it is now useful. I'm going to use it like this for a little while and next priorities will come 
+
+TODO:
+
+ * Fixing justification on memory pane.
+ * Adding more info and space on the programs pane.
+ * Editing the metadata on existing programs.
+
 
 Dependencies
 ------------

@@ -39,7 +39,6 @@ class ImportOneProgramWindow(Gtk.Window):
         self.outerVBox.pack_start(self.stack, True, True, 0)
         self.layoutCancelSubmit()
         self.outerVBox.pack_end(self.csBox, True, True, 0)
-        print(self.get_parent())
 
 
 

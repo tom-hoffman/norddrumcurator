@@ -34,7 +34,7 @@ def getMidiPort():
 
 def clearMidiMessages(port):
     for msg in port.iter_pending():
-        print(msg)
+        print(f"Clearing {msg}.")
     print("Queue clear.")
 
 def save_sysex(name: str, sysex: mido.Message):
@@ -54,7 +54,6 @@ def sendMidiProgramChange(port: mido.ports.IOPort,
 def pushProgram(port: mido.ports.IOPort,
                 file: str):
     syx = read_sysex(file)
-    print(syx)
     #port.send(mido.Message('sysex', data = [syx.data]))
     port.send(syx)
 
