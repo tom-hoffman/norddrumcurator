@@ -42,12 +42,12 @@ class NDProg:
     def __repr__(self):
         return f"NDProg: {self.name} with {len(self.channels)} channels."
 
-UNKNOWN_PLEASURES = NDProg('',
+UNKNOWN_PLEASURES = NDProg('../unknown_pleasures.syx',
                            0,
                            "Unknown Pleasures",
                            "",
                            "",
-                           "")
+                           "C#")
 
 class DataRoot:
     '''Top level container for the data objects.'''

@@ -60,3 +60,19 @@ Midi tests
 
 These are interactive and may need to be checked on the ND.
 
+    >>> import mido
+    >>> import functions
+    >>> port = mido.open_ioport(functions.getMidiPort())
+    
+    >>> print(port) #doctest: +ELLIPSIS
+    <open I/O port ...>
+
+Check to see if the ND switches to channel 25.
+
+    >>> functions.sendMidiProgramChange(port, 25)
+
+Listen/watch for confirmation from ND.
+
+    >>> functions.midiConfirm(port)
+    
+

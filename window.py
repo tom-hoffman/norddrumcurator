@@ -161,6 +161,18 @@ class MemoryWindow(Gtk.ApplicationWindow):
     def getMemSlotFromHBox(self, widget):
         return int(widget.get_children()[0].get_text())
 
+    def memRowButtons(self, hb, slot):
+        # (hb :: Gtk.HBox, slot :: int) -> 
+        # Adds buttons to hb (HBox).
+        for b in ACTIONS:
+            lab = Gtk.Label(b)
+            lab.set_padding(2, 2)
+            but = Gtk.Button()
+            but.set_property("width-request", 20)
+            but.add(lab)
+            but.connect("clicked", self.rowButtonClicked, slot, b)
+            hb.pack_end(but, expand = False, fill = False, padding = 2)
+
 # Drag and drop handlers.
 
     def tree_drag_begin(self, treeview, context):
@@ -185,18 +197,6 @@ class MemoryWindow(Gtk.ApplicationWindow):
                 text="You cannot drag a channel")
             warn.run()
             warn.destroy()
-        
-    def memRowButtons(self, hb, slot):
-        # (hb :: Gtk.HBox, slot :: int) -> 
-        # Adds buttons to hb (HBox).
-        for b in ACTIONS:
-            lab = Gtk.Label(b)
-            lab.set_padding(2, 2)
-            but = Gtk.Button()
-            but.set_property("width-request", 20)
-            but.add(lab)
-            but.connect("clicked", self.rowButtonClicked, slot, b)
-            hb.pack_end(but, expand = False, fill = False, padding = 2)
 
 # Button handlers.
 
@@ -214,7 +214,14 @@ class MemoryWindow(Gtk.ApplicationWindow):
             self.importWindow.show_all()
             callback_id = GLib.timeout_add(250, self.pull_one,
                                            self.app.port)
-
+        if action == "Push":
+            functions.sendMidiProgramChange(self.app.port, slot)
+            p = self.getProgramFromMemory(slot)
+            print(f"Program {p.file}.")
+            #functions.sendMidiProgramChange(
+            
+# def pushProgram(port: mido.ports.IOPort,
+#                 file: str):
 # Midi pull action.
 
     def pull_one(self, midi_port):
@@ -227,6 +234,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
             chk = zlib.crc32(msg.bin())
             # check to see if this is a dupe.
             match = functions.programMatch(chk, self.app.root.programs)
+            functions.midiConfirm(self.app.port)
             if match == -1:
                 # if not a dupe.
                 iw.midiMessage = msg

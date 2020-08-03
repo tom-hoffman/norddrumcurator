@@ -45,6 +45,24 @@ def read_sysex(file_name: str) -> mido.Message:
     with open(FILE_PREFIX + file_name, 'rb') as f:
         return f.read()
 
+def sendMidiProgramChange(port: mido.ports.IOPort,
+                    program: int):
+    # You need to subtract one from the program because computers.
+    port.send(mido.Message('program_change',
+                           channel = ND_CHANNEL,
+                           program = (program - 1)))
+
+def pushProgram(port: mido.ports.IOPort,
+                file: str):
+    print(file)
+
+def midiConfirm(port: mido.ports.IOPort):
+    for n in CHANNEL_NUMBERS:
+        port.send(mido.Message('note_on',
+                               note = n,
+                               velocity = VELOCITY,
+                               channel = ND_CHANNEL))
+
 # Misc utility functions.
 
 def programMatch(newCheck: int, progDict: Dict):

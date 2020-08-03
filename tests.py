@@ -1,2 +1,2 @@
 import doctest
-doctest.testfile("nd-tests.txt", report = True)
+doctest.testfile("nd-tests.rst", report = True)
