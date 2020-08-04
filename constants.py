@@ -27,7 +27,8 @@ CHANNEL_NUMBERS = (36, 38, 46, 42)
 VELOCITY = 20
 
 # UI Cconstants
-COLUMN_HEADERS = ("Name", "Style/Instrument", "Category")
+COLUMN_HEADERS = ("Name", "Style/Instrument", "Category",
+                  "Key", "Fav.", "Preset")
 ACTIONS = ("Pull", "Push")
 CSS_PATH = 'gtkstyle.css'
 CSS = Gtk.CssProvider()

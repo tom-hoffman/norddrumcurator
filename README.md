@@ -31,10 +31,8 @@ In short, it is now useful. I'm going to use it like this for a little while and
 
 TODO:
 
- * Fixing justification on memory pane.
- * Adding more info and space on the programs pane.
  * Editing the metadata on existing programs.
-
+ * Prettying up programs pane (Gtk.CellRendererToggle).
 
 Dependencies
 ------------

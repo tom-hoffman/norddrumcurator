@@ -16,18 +16,27 @@ def addChannelBranches(store, progRow, channels):
     for i in range(0, len(channels)):
         try:
             ch = channels[i]
-            store.append(progRow, [ch.name, ch.instrument, ""])
+            store.append(progRow, [ch.name,
+                                   ch.instrument,
+                                   "",
+                                   "",
+                                   ch.favorite,
+                                   ""])
         except IndexError:
             pass
 
 def populateFilesTreeStore(memory, programs):
     # (MemoryWindow, memory :: list<int>,
     #  programs :: dict<int : NDProg>) -> Gtk.TreeStore
-    store = Gtk.TreeStore(str, str, str)
+    store = Gtk.TreeStore(str, str, str, str, bool, bool)
     for i in range(0, len(programs)):
         prog = programs[i]  # get the right program
         progRow = store.append(None, [prog.name,
-                                      prog.style, prog.category])
+                                      prog.style,
+                                      prog.category,
+                                      prog.key,
+                                      prog.favorite,
+                                      prog.preset])
         addChannelBranches(store, progRow, prog.channels)     
     return store
 
@@ -46,14 +55,14 @@ class MemoryWindow(Gtk.ApplicationWindow):
                                        title="Tom's Nord Drum 1 Program Manager",
                                        application=app)
         self.set_default_size(1200, 800)
-        self.set_border_width(10)
+        self.set_border_width(4)
         # Panes
         paned = Gtk.HPaned()
         self.add(paned)
         # Memory in left.
         swLeft = Gtk.ScrolledWindow()
         swLeft.set_shadow_type(Gtk.ShadowType.IN)
-        swLeft.set_size_request(460, 800)
+        swLeft.set_size_request(360, 800)
         self.memList = Gtk.ListBox()
         self.memList.set_selection_mode(Gtk.SelectionMode.SINGLE)
         swLeft.add(self.memList)
@@ -152,7 +161,7 @@ class MemoryWindow(Gtk.ApplicationWindow):
         css.add_class(self.app.root.cache_status[i])
         for l in labels:
             hb.pack_start(Gtk.Label(l),
-                          expand = True, fill = True, padding = 10)
+                          expand = False, fill = True, padding = 10)
         hb.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.COPY)
         hb.drag_dest_add_text_targets()
         hb.connect("drag-data-received", self.on_drag_data_received)
