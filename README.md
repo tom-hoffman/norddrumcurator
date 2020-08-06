@@ -1,9 +1,11 @@
 Nord Drum Curator
 =================
 
-The original, somewhat short lived, Nord Drum 1 has no utilities for managing drum programs, unlike the subsequent Nord Drum 2 and 3p.
-
 This is a personal project to write a GTK3 app in Python to manage the Nord Drum 1 memory and a library of drum programs.  It is a personal project in the sense that I don't really plan on packaging for Linux, let alone Windows or OS X, but who knows what the future might bring.
+
+![Early development screenshot.] (https://raw.githubusercontent.com/tom-hoffman/norddrumcurator/master/nd-curator.png)
+
+The original, somewhat short lived, Nord Drum 1 has no utilities for managing drum programs, unlike the subsequent Nord Drum 2 and 3p.
 
 Currently I'm only worring about the Nord Drum 1, because that's the one I got.  Adding support for the 2 or 3p should not be hard.
 
