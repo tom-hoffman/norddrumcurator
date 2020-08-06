@@ -46,7 +46,11 @@ class ImportOneProgramWindow(Gtk.Window):
         loadVBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.loadLabel = Gtk.Label("Clearing MIDI message queue...")
         functions.clearMidiMessages(self.midi_port)
-        self.loadLabel.set_text("Waiting for PROG DUMP...")
+        mess = '\n'.join(("On the Nord Drum,",
+                          "Press SHIFT/PROG DUMP,",
+                          "and PROGRAM/STORE."))
+        self.loadLabel.set_text(mess)
+        self.loadLabel.set_justify(Gtk.Justification(2))
         loadVBox.pack_start(self.loadLabel, False, False, 20)
         self.spinner = Gtk.Spinner()
         self.spinner.start()

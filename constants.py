@@ -26,8 +26,8 @@ ND_CHANNEL = ACTUAL_CHANNEL - 1
 CHANNEL_NUMBERS = (36, 38, 46, 42)
 VELOCITY = 20
 
-# UI Cconstants
-COLUMN_HEADERS = ("Name", "Style/Instrument", "Category",
+# UI constants
+COLUMN_HEADERS = ("Name", "Style", "Category",
                   "Key", "Fav.", "Preset")
 ACTIONS = ("Pull", "Push")
 CSS_PATH = 'gtkstyle.css'
@@ -37,3 +37,9 @@ SCREEN = Gdk.Screen.get_default()
 PRIORITY = Gtk.STYLE_PROVIDER_PRIORITY_USER
 CONTEXT = Gtk.StyleContext()
 CONTEXT.add_provider_for_screen(SCREEN, CSS, PRIORITY)
+
+# these all have to be unique.
+MENU_DICT = {"File" : ("New", "Open...", "Save", "Save as...", "Save copy...",
+                       "Print...", "Exit"),
+             "Edit" : ("Copy", "Paste"),
+             "Sync" : ("Check sync", "Pull all...", "Push changes")}

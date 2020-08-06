@@ -52,13 +52,31 @@ class MemoryWindow(Gtk.ApplicationWindow):
         # Note that app.root is the data root.
         self.app = app # not 100% sure this is necessary.
         Gtk.ApplicationWindow.__init__(self,
-                                       title="Tom's Nord Drum 1 Program Manager",
+                                       title="Nord Drum Curator",
                                        application=app)
         self.set_default_size(1200, 800)
         self.set_border_width(4)
+        wholeGrid = Gtk.VBox()
+        wholeGrid.set_size_request(1200, 800)
+        self.add(wholeGrid)
+        file_menu_container = Gtk.Menu.new()
+        # Menubar
+        # This creates "insensitive" and unconnected menu items.
+        menubar = Gtk.MenuBar.new()
+        wholeGrid.add(menubar)
+        self.menuDict = {}
+        for key, value in MENU_DICT.items():
+            container = Gtk.Menu.new()
+            self.menuDict[key] = Gtk.MenuItem.new_with_label(key)
+            menubar.append(self.menuDict[key])
+            self.menuDict[key].set_submenu(container)
+            for i in value:
+                self.menuDict[i] = Gtk.MenuItem.new_with_label(i)
+                self.menuDict[i].set_sensitive(False)
+                container.append(self.menuDict[i])
         # Panes
         paned = Gtk.HPaned()
-        self.add(paned)
+        wholeGrid.add(paned)
         # Memory in left.
         swLeft = Gtk.ScrolledWindow()
         swLeft.set_shadow_type(Gtk.ShadowType.IN)
@@ -73,7 +91,8 @@ class MemoryWindow(Gtk.ApplicationWindow):
         swRight.set_shadow_type(Gtk.ShadowType.IN)
         self.progTree = Gtk.TreeView()
         self.progTree.enable_model_drag_source(Gdk.ModifierType.BUTTON1_MASK,
-                                               [('text/plain', 0, 0)], Gdk.DragAction.COPY)
+                                               [('text/plain', 0, 0)],
+                                               Gdk.DragAction.COPY)
         self.progTree.connect('drag-begin', self.tree_drag_begin)
         self.progTree.connect('drag-data-get', self.tree_drag_data_get)
         self.updateProgTree()
