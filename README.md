@@ -18,7 +18,8 @@ This will all be managed via SYSEX messages to and from the ND1.  Unfortunately 
 Current Status
 --------------
 
-As of 8/3/2020, I'm calling this Milestone 1, although I'm not doing a package, branch, release or whatever. I'll try to make sure a checkout on the master branch always runs.
+As of 8/14/2020, I'm doing a major refactoring now that I have a better 
+understanding of how to dump and push all files at once. 
 
 What works:
 
@@ -34,12 +35,19 @@ TODO:
  * Editing the metadata on existing programs.
  * Prettying up programs pane (Gtk.CellRendererToggle).
 
-Dependencies
-------------
+Python dependencies
+-------------------
 
  * Python 3
  * mido (Python MIDI library)
  * PyGTK 3.0 
+ * crcmod
+
+Non-Python dependencies
+-----------------------
+
+ * amidi - Apparently needed to push a complete SysEx file to the ND.
+
 
 To start with the interactive GTK debugger:
 

@@ -2,22 +2,19 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-
 # model constants
-STYLES = ("real", "retro", "ethno", "fx")
-CATEGORIES = ("drums", "percussion", "kit")
-INSTRUMENTS = ("kick", "snare", "rack tom", "floor tom",
-               "closed hat", "open hat", "other hat",
-               "crash", "ride", "cowbell", "woodblock",
-               "steel-drum", "ping", "sci fi", "unknown")
-PERFORMANCE_GROUPS = ["Live 1", "Live 2", "My Kit"] + list(STYLES)
+TAGS = ["real", "retro", "ethno", "fx", "drums", "percussion", "kit"]
+INSTRUMENTS = ("kick", "snare", "r-tom", "f-tom",
+               "c-hat", "o-hat", "ride", "crash", "edrum",
+               "clap", "cowbell", "woodblock", "bell"
+               "metal", "drone", "sci fi")
 KEYS = ("None", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 CACHE_STATUSES = ("checked", "dirty", "unknown")
-CHANNEL_NAMES = ("CH1", "CH2", "CH3", "CH4")
 
 # file constants
 PICKLE_FILENAME = "drums.pickle"
 FILE_PREFIX = "programs/"
+FACTORY_SOUNDBANK = "nord_drum_factory_bank_v1.04.syx"
 
 # MIDI constants
 MIDI_INTERFACE = "UM-ONE:UM-ONE MIDI 1"
@@ -29,7 +26,7 @@ VELOCITY = 20
 # UI constants
 COLUMN_HEADERS = ("Name", "Style", "Category",
                   "Key", "Fav.", "Preset")
-ACTIONS = ("Pull", "Push")
+ACTIONS = ("edit",)
 CSS_PATH = 'gtkstyle.css'
 CSS = Gtk.CssProvider()
 CSS.load_from_path(CSS_PATH)
@@ -43,3 +40,85 @@ MENU_DICT = {"File" : ("New", "Open...", "Save", "Save as...", "Save copy...",
                        "Print...", "Exit"),
              "Edit" : ("Copy", "Paste"),
              "Sync" : ("Check sync", "Pull all...", "Push changes")}
+
+FACTORY_SOUNDBANK_METADATA = (("retro", "Monologue", "drums"),
+("real", "Classic Vistalite", "drums"),
+("retro", "Blue House", "kit"),
+("real", "Brushford", "kit"),
+("real", "Bebox Delux", "drums"),
+("retro", "Always Hip Hop", "kit"),
+("real", "Gran Casa Timp", "kit"),
+("retro", "Thanx to Burgees", "drums"),
+("fx", "Reso Sweep", "perc"),
+("retro", "Vince Gate", "drums"),
+("retro", "UnoDosKickHat", "kit"),
+("real", "spectrum", "drums"),
+("real", "Ateiste", "drums"),
+("retro", "Noisy Barrel Orchestra", "drums"),
+("retro", "Higgins Particle Hat", "kit"),
+("retro", "Clothed Funk Kit", "kit"),
+("ethno", "Komal Melodic", "perc"),
+("ethno", "Lalalatin", "perc"),
+("retro", "Bend Down Disco", "perc"),
+("retro", "Flying Dront Circus", "kit"),
+("ethno", "Tribunal", "perc"),
+("real", "King Kong Karma", "kit"),
+("fx", "Training with Kolal", "perc"),
+("retro", "Tiny Tiny Pic", "kit"),
+("ethno", "Red Beat", "perc"),
+("retro", "peatPerlife", "kit"),
+("retro", "Piccolosim", "perc"),
+("real", "Acoustic Flower King", "kit"),
+("fx", "Apostasy Steam Noise", "perc"),
+("fx", "DoReMinor Melodic", "perc"),
+("fx", "Must Bend Tolotto", "drums"),
+("ethno", "Sambalasala", "perc"),
+("fx", "Kiss the Click", "perc"),
+("retro", "Sweep Type 4tonight", "drums"),
+("fx", "Noise Click Trap", "kit"),
+("real", "Bend Timpanic", "drums"),
+("retro", "dododrum", "kit"),
+("fx", "Fast Sweep Melodic", "drums"),
+("ethno", "Bella Balinese", "perc"),
+("fx", "Noisy Royalty", "drums"),
+("ethno", "Steely Melodic", "drums"),
+("real", "Soft Acoustic", "drums"),
+("real", "Tubular Bells and Triangle", "perc"),
+("ethno", "Ultra Tribal Dance", "perc"),
+("retro", "HeaHihat", "kit"),
+("fx", "Click Gate and Vinyl", "kit"),
+("real", "Double Snare", "kit"),
+("real", "Hells Bells", "perc"),
+("real", "Rototsthile", "drums"),
+("retro", "Melodic Technocrat", "kit"),
+("real", "Dull Dusty", "drums"),
+("fx", "Retrophile Gated Noise", "drums"),
+("ethno", "Real Cuba Conga Cola", "perc"),
+("retro", "Retrograd", "drums"),
+("fx", "GasaGate", "perc"),
+("real", "Clap Trap", "drums"),
+("real", "Krimsonite", "drums"),
+("real", "Serious Decay", "kit"),
+("ethno", "Dry Tribe", "drums"),
+("fx", "Cinematikino", "perc"),
+("fx", "Toy Ambulance", "kit"),
+("retro", "Neophile", "drums"),
+("retro", "Stabby Hip Hop", "kit"),
+("real", "Retro Noise Reverb", "drums"),
+("retro", "Ulam Spiral", "drums"),
+("retro", "Sawkas Jungle Heat", "kit"),
+("retro", "Knick Knock Knack", "drums"),
+("real", "Bright Click Brush", "drums"),
+("retro", "New Romantic Tight", "kit"),
+("fx", "Intergalactic Battle", "perc"),
+("retro", "Nosampled Drum", "drums"),
+("retro", "Poor Tone", "kit"),
+("fx", "Clicks&Pops", "drums"),
+("fx", "Fat Gated Chattanoga", "drums"),
+("real", "Retro Real Snap Snare", "drums"),
+("ethno", "Slitz Box", "perc"),
+("ethno", "Real Tommy Steel", "perc"),
+("fx", "Macro Sweeper", "kit"),
+("fx", "Darwin's Sex Machine", "kit"),
+("real", "Apparatorium", "drums"),
+("", "Default", ""))                              

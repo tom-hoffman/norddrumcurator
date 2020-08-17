@@ -43,7 +43,7 @@ A reference for implementing this in the main code later.
     7534
     >>> t.seek(0) 
     0
-    >>> loaded = pickle.load(t)
+    >>> loaded = pickle.load(t) 
     >>> print(loaded)
     DataRoot has 31 programs on disc and 30 in memory.
     >>> t.close()

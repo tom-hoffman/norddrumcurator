@@ -131,3 +131,7 @@ dmypy.json
 *.pickle
 
 programs/
+
+write.syx
+
+factory_soundbank.csv

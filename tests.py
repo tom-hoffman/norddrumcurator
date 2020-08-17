@@ -1,2 +1,5 @@
 import doctest
-doctest.testfile("nd-tests.rst", report = True)
+doctest.testfile("sets-tests.rst", report = True)
+
+
+    

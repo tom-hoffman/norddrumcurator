@@ -1,76 +1,75 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
+import mido
+
+import functions
 from constants import *
 
 #
 # Data model
 #
 
-
-class NDChannel:
-    '''A Nord Drum 1 Channel.'''
-    def __init__(self, name: str = "CH?",
-                 instrument: str = "unknown",
-                 favorite: bool = False):
-        self.name = name
-        self.instrument = instrument
-        self.favorite = favorite
-    def __repr__(self):
-        return f"{self.name}: {self.instrument}."
-
-def generate_default_channels(name):
-    return NDChannel(name, "unknown", False)
-
-DEFAULT_CHANNELS = tuple(map(generate_default_channels, CHANNEL_NAMES))
-
 class NDProg:
     '''A Nord Drum 1 Program.'''
-    # (file :: str, chk :: int, name :: str, style :: str, 
-    #  category :: str, key :: str, channels :: list<NDChannel>,
-    #  favorite :: bool, preset :: bool) -> NDProg
-    def __init__(self, file, chk, name, style, category, key,
-                 channels = DEFAULT_CHANNELS, favorite = False, preset = False):
+    def __init__(self,
+                 ID: int,
+                 file: str,
+                 chk: int,
+                 description: str,
+                 replaces: int = -1,
+                 instruments: List[str] = [],
+                 key: str = "", 
+                 tags: List[str] = []):
+        self.ID = ID
         self.file = file
         self.chk = chk
-        self.name = name
-        self.style = style
-        self.category = category
+        self.description = description
+        self.replaces = replaces
+        self.instruments = instruments
         self.key = key
-        self.channels = channels
-        self.favorite = favorite
-        self.preset = preset
+        self.tags = tags
     def __repr__(self):
-        return f"NDProg: {self.name} with {len(self.channels)} channels."
-
-UNKNOWN_PLEASURES = NDProg('../unknown_pleasures.syx',
-                           0,
-                           "Unknown Pleasures",
-                           "",
-                           "",
-                           "C#")
+        return f"NDProg: {self.description}."
 
 class DataRoot:
     '''Top level container for the data objects.'''
-    # NOTE: The memory list starts with a dummy value at index 0.
     def __init__(self,
-                 programs: Dict[int, NDProg],
-                 memory: List[int],
-                 cache_status: List[str],
-                 program_counter: int):
+                 programs: Tuple[NDProg] = (),
+                 memory: List[int] = [-1] * 99,
+                 cache_status: List[str] = ["dirty"] * 99,
+                 program_counter: int = 0):
         self.programs = programs
         self.memory = memory
         self.cache_status = cache_status
         self.program_counter = program_counter
+        
     def __repr__(self):
-        return f"Programs -> {self.programs}; Memory -> {self.memory}"
-    def __str__(self):
-        return f"DataRoot has {len(self.programs)} programs on disc and {len(self.memory)} in memory."
-    def addProgram(self, program: NDProg):
-        # Adds a ! if this is a dupe name.
-        prog_names = list(map(lambda i : self.programs[i].name, self.programs))
-        print(program.name, prog_names)
-        if program.name in prog_names:
-            program.name = program.name + "!"
-        p = self.program_counter + 1
-        self.programs[p] = program
-        self.program_counter = p
+        return f"DataRoot has {len(self.programs)} programs on disc."
+
+    def addProgram(self, p: NDProg) -> Tuple[NDProg]:
+        new = self.programs + (p,)
+        self.program_counter += 1
+        return new
+
+    def load_factory_soundbank(self):
+        bank = mido.read_syx_file(FACTORY_SOUNDBANK)
+        for i in range(81):
+            mess = functions.resetSysExIndex(bank[i])
+            ID = self.program_counter
+            description = FACTORY_SOUNDBANK_METADATA[i][1]
+            name = functions.program_file_name(ID, description)
+            check = functions.messageChecksum(mess)
+            style = FACTORY_SOUNDBANK_METADATA[i][0]
+            cat = FACTORY_SOUNDBANK_METADATA[i][2]
+            prog = NDProg(ID,
+                          name,
+                          check,
+                          description,
+                          tags = [style, cat, "nord"])
+                                                      
+            self.programs = self.addProgram(prog)
+            functions.save_sysex(name, mess)
+
+    def save(self, location: str = PICKLE_FILENAME):
+        with open(location, 'wb') as f:
+            f.write(pickle.dumps(self))
