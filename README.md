@@ -5,13 +5,13 @@ This is a personal project to write a GTK3 app in Python to manage the Nord Drum
 
 ![Early development screenshot.](https://raw.githubusercontent.com/tom-hoffman/norddrumcurator/master/nd-curator.png)
 
-The original, somewhat short lived, Nord Drum 1 has no utilities for managing drum programs, unlike the subsequent Nord Drum 2 and 3p.
+Please note that "Nord" and "Nord Drum" are trademarks of Clavia DMI AB, with whom I have no connection.
 
-Currently I'm only worring about the Nord Drum 1, because that's the one I got.  Adding support for the 2 or 3p should not be hard.
+The original, somewhat short lived, Nord Drum 1 has no utilities for managing drum programs, unlike the subsequent Nord Drum 2 and 3p. Currently I'm only worring about the Nord Drum 1, because that's the one I got.  Adding support for the 2 or 3p should not be hard.
 
-The basic model for the interface is a double paned window, where the left pane has a list of the 99 memory positions of my ND1, and the right pane has a tree view of all the programs I have saved to the computer.
+In particular, what I want to do is arrange related sets of programs in adjacent memory locations, so I can use a foot switch to change from, say, one drum program for the verse of a song, to a different one for the chorus, and then back again. I'd also like to be able to easily rearange programs to match a different sequence of songs for live performance.
 
-My intention is to be able to rearrange the programs in memory on the left pane and then upload the changes to the ND1 in as automatic a process as possible.
+The basic model for the interface is a double paned window, where the left pane has a list of the 99 memory positions of my ND1, and the right pane has a list of all the programs I have saved to the computer.  My intention is to be able to rearrange the programs in memory on the left pane and then upload the changes to the ND1.
 
 This will all be managed via SYSEX messages to and from the ND1.  Unfortunately the actual binary format used by the ND1 does some kind of tricky checksumming that hasn't been reverse engineered completely.  Without that, we can't actually edit the programs themselves outside the ND1.
 
