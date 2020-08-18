@@ -7,11 +7,20 @@ from gi.repository import GLib
 
 import dialogs
 import functions
-import model
+from model import *
 from constants import *
 from ndexceptions import *
 
 # Screen layout helper functions.
+
+def channelButtons(prog: NDProg) -> Gtk.HBox:
+    hb = Gtk.HBox()
+    for i in range(len(prog.instruments)):
+        b = Gtk.Button.new_with_label(prog.instruments[i])
+        b.set.property("width-request", 20)
+        # b.connect...
+        hb.pack_end(b, expand = False, fill = False, padding = 2)
+    return hb
 
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
@@ -78,10 +87,11 @@ class AppWindow(Gtk.ApplicationWindow):
         for i in range(0, len(slots)):
             self.memList.add(self.buildMemoryRow(i))
 
-    def buildProgramRow(self, p: model.NDProg) -> Gtk.ListBoxRow:
+    def buildProgramRow(self, p: NDProg) -> Gtk.ListBoxRow:
         r = Gtk.ListBoxRow()
         hb = self.progRowLabels(p)
-        # buttons
+        hb.pack_end(channelButtons(p),
+                    expand = False, fill = False, padding = 2)
         r.add(hb)
         return r
 
@@ -92,7 +102,7 @@ class AppWindow(Gtk.ApplicationWindow):
         r.add(hb)
         return r
 
-    def progRowLabels(self, p: model.NDProg) -> Gtk.HBox:
+    def progRowLabels(self, p: NDProg) -> Gtk.HBox:
         hb = Gtk.HBox()
         css = hb.get_style_context()
         hb.pack_start(Gtk.Label(p.description),
@@ -113,7 +123,7 @@ class AppWindow(Gtk.ApplicationWindow):
             for l in labels:
                 hb.pack_start(Gtk.Label(l),
                               expand = False, fill = True, padding = 10)
-            self.memRowButtons(hb, i)
+            # self.memRowButtons(hb, i)
 
         hb.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.COPY)
         hb.drag_dest_add_text_targets()

@@ -3,11 +3,13 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
 # model constants
+
 TAGS = ["real", "retro", "ethno", "fx", "drums", "percussion", "kit"]
-INSTRUMENTS = ("kick", "snare", "r-tom", "f-tom",
+CHANNEL_COUNT = 4
+INSTRUMENTS = ("?", "kick", "snare", "r-tom", "f-tom",
                "c-hat", "o-hat", "ride", "crash", "edrum",
-               "clap", "cowbell", "woodblock", "bell"
-               "metal", "drone", "sci fi")
+               "clap", "cbell", "block", "bell",
+               "metal", "drone", "scifi")
 KEYS = ("None", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 CACHE_STATUSES = ("checked", "dirty", "unknown")
 
@@ -18,8 +20,6 @@ FACTORY_SOUNDBANK = "nord_drum_factory_bank_v1.04.syx"
 
 # MIDI constants
 MIDI_INTERFACE = "UM-ONE:UM-ONE MIDI 1"
-ACTUAL_CHANNEL = 1 # the one on the ND display.
-ND_CHANNEL = ACTUAL_CHANNEL - 1
 CHANNEL_NUMBERS = (36, 38, 46, 42)
 VELOCITY = 20
 
