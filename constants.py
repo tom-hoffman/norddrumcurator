@@ -10,7 +10,7 @@ INSTRUMENTS = ("?", "kick", "snare", "r-tom", "f-tom",
                "c-hat", "o-hat", "ride", "crash", "edrum",
                "clap", "cbell", "block", "bell",
                "metal", "drone", "scifi")
-KEYS = ("None", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+KEYS = ("?", "None", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 CACHE_STATUSES = ("checked", "dirty", "unknown")
 
 # file constants

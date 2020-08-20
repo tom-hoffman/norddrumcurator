@@ -17,8 +17,8 @@ class NDProg:
                  chk: int,
                  description: str,
                  replaces: int = -1,
-                 instruments: List[str] = 4 *["?"],
-                 key: str = "", 
+                 instruments: ["kick", "snare", "?", "?"]
+                 key: str = "?", 
                  tags: List[str] = []):
         self.ID = ID
         self.file = file
