@@ -17,7 +17,7 @@ class NDProg:
                  chk: int,
                  description: str,
                  replaces: int = -1,
-                 instruments: ["kick", "snare", "?", "?"]
+                 instruments: List[str] = ["kick", "snare", "?", "?"], 
                  key: str = "?", 
                  tags: List[str] = []):
         self.ID = ID
@@ -50,25 +50,6 @@ class DataRoot:
         new = self.programs + (p,)
         self.program_counter += 1
         return new
-
-    def load_factory_soundbank(self):
-        bank = mido.read_syx_file(FACTORY_SOUNDBANK)
-        for i in range(81):
-            mess = functions.resetSysExIndex(bank[i])
-            ID = self.program_counter
-            description = FACTORY_SOUNDBANK_METADATA[i][1]
-            name = functions.program_file_name(ID, description)
-            check = functions.messageChecksum(mess)
-            style = FACTORY_SOUNDBANK_METADATA[i][0]
-            cat = FACTORY_SOUNDBANK_METADATA[i][2]
-            prog = NDProg(ID,
-                          name,
-                          check,
-                          description,
-                          tags = [style, cat, "nord"])
-                                                      
-            self.programs = self.addProgram(prog)
-            functions.save_sysex(name, mess)
 
     def save(self, location: str = PICKLE_FILENAME):
         with open(location, 'wb') as f:

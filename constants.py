@@ -4,8 +4,10 @@ from gi.repository import Gtk, Gdk
 
 # model constants
 
-TAGS = ["real", "retro", "ethno", "fx", "drums", "percussion", "kit"]
+# tags <= 5 characters.
+TAGS = ["real", "retro", "ethno", "fx", "drums", "perc.", "kit"]
 CHANNEL_COUNT = 4
+# Instrument name length <= 5 characters.
 INSTRUMENTS = ("?", "kick", "snare", "r-tom", "f-tom",
                "c-hat", "o-hat", "ride", "crash", "edrum",
                "clap", "cbell", "block", "bell",
@@ -20,13 +22,12 @@ FACTORY_SOUNDBANK = "nord_drum_factory_bank_v1.04.syx"
 
 # MIDI constants
 MIDI_INTERFACE = "UM-ONE:UM-ONE MIDI 1"
+NOMINAL_MIDI_CHANNEL = 1
+MIDI_CHANNEL = NOMINAL_MIDI_CHANNEL - 1
 CHANNEL_NUMBERS = (36, 38, 46, 42)
-VELOCITY = 20
+VELOCITY = 100
 
 # UI constants
-COLUMN_HEADERS = ("Name", "Style", "Category",
-                  "Key", "Fav.", "Preset")
-ACTIONS = ("edit",)
 CSS_PATH = 'gtkstyle.css'
 CSS = Gtk.CssProvider()
 CSS.load_from_path(CSS_PATH)

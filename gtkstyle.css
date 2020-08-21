@@ -3,12 +3,16 @@ window {
 }
 
 box.checked {
-    background-color : #ACBAA5;
+    background-color : #FFE6A7;
 }
 
 box.dirty {
-    background-color : #B3A5BA;
+    background-color : #FFE6A7;
 }
 
-
+button.instrument {
+    padding: 3px;
+    min-width: 40px;
+    font-family: monospace;
+}
     
