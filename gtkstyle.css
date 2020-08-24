@@ -15,4 +15,10 @@ button.instrument {
     min-width: 40px;
     font-family: monospace;
 }
-    
+
+button.control {
+    padding: 3px;
+    min-width: 35px;
+    font-weight: bold;
+}
+

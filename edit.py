@@ -67,11 +67,11 @@ class EditProgramDialog(Gtk.Window):
         self.destroy()
 
     def processInput(self, button):
-        # try this without a return value first.
         p = self.prog
         p.description = self.descriptionEntry.get_text()
         p.instruments = [i.get_active_text() for i in self.instrumentCombos]
         p.key = self.keyCombo.get_active_text()
+        print(p.instruments)
         # probably change the cache_status here?
         self.destroy()
             

@@ -11,7 +11,6 @@ from model import *
 import functions
 import constants
 
-
 class NordDrum1Manager(Gtk.Application):
     def __init__(self):
         try:
