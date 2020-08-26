@@ -7,37 +7,12 @@ from gi.repository import Gtk
 from gi.repository import GLib
 
 import edit
+import rows
 import functions
 from model import *
 from constants import *
 from ndexceptions import *
 
-class ProgramRow(Gtk.ListBoxRow):
-    def __init__(self,
-                 program: NDProg):
-        Gtk.ListBoxRow.__init__(self)
-        self.program = program
-        hb = Gtk.HBox()
-        css = hb.get_style_context()
-        self.descriptionLabel = Gtk.Label(label = program.description)
-        hb.pack_start(self.descriptionLabel,
-                      expand = False, fill = False, padding = 2)
-        self.add(hb)
-        buttonBox = Gtk.HBox()
-        self.channel_buttons = []
-        instruments = list(reversed(self.program.instruments))
-        for i in range(len(instruments)):
-            b = Gtk.Button.new_with_label(instruments[i])
-            b.get_style_context().add_class("instrument")
-            b.set_sensitive(False)
-            buttonBox.pack_end(b, expand = False, fill = False, padding = 2)
-            self.channel_buttons.append(b)      
-        hb.pack_end(buttonBox,
-                      expand = False, fill = False, padding = 2)
-        self.testButton = Gtk.Button.new_with_label("test")
-        self.testButton.get_style_context().add_class("control")
-        buttonBox.pack_end(self.testButton, expand = False,
-                           fill = False, padding = 2)
 
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
@@ -52,6 +27,7 @@ class AppWindow(Gtk.ApplicationWindow):
                                        application=app)
         self.set_default_size(1000, 800)
         self.set_border_width(4)
+        self.connect("destroy", Gtk.main_quit)
         wholeGrid = Gtk.VBox()
         wholeGrid.set_size_request(1000, 800)
         self.add(wholeGrid)
@@ -102,21 +78,34 @@ class AppWindow(Gtk.ApplicationWindow):
 
     def connectMenuItems(self):
         e = self.menuDict["Edit program..."]
-        e.connect("activate",
-                  self.launchEditDialog)
+        e.connect("activate", self.launchEditDialog)
+        save = self.menuDict["Save"]
+        save.set_sensitive(True)
+        save.connect("activate", self.saveRoot)
+        ex = self.menuDict["Exit"]
+        ex.set_sensitive(True)
+        ex.connect("activate", self.ex)
 
     def launchEditDialog(self, menu):
-        p = self.getSelectedProgram()
+        p = self.progListBox.get_selected_row()
         diag = edit.EditProgramDialog(p)
         diag.set_transient_for(self)
         diag.connect("destroy", self.redraw)
         diag.show_all()
+    
+    def saveRoot(self, menu):
+        self.app.root.save()
+
+    def ex(self, menu):
+        self.destroy()
 
     def programRowSelected(self, box, row):
         if row:
             self.menuDict["Edit program..."].set_sensitive(True)
         else:
             self.menuDict["Edit program..."].set_sensitive(False)
+
+# Other window methods
 
     def redraw(self, w):
         # (w :: Gtk.Window)
@@ -128,7 +117,7 @@ class AppWindow(Gtk.ApplicationWindow):
         pass
 
     def connectInstrumentButtons(self,
-                                 pr: ProgramRow):
+                                 pr: rows.ProgramRow):
         for i in range(len(pr.channel_buttons)):
             b = pr.channel_buttons[i]
             b.connect("clicked", self.previewProgramSound, 3 - i)
@@ -138,7 +127,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
     def activateInstruments(self,
                             button: Gtk.Button,
-                            pr: ProgramRow):
+                            pr: rows.ProgramRow):
         syx = functions.read_sysex(pr.program.file)
         self.app.port.send(syx)
         self.deactivateAllInstruments()
@@ -148,7 +137,7 @@ class AppWindow(Gtk.ApplicationWindow):
     def buildProgramRows(self):
         progs = self.app.root.programs
         for p in progs:
-            self.progListBox.add(ProgramRow(p))
+            self.progListBox.add(rows.ProgramRow(p))
         self.progListBox.foreach(self.connectInstrumentButtons)
 
     def populateMemoryRows(self):
@@ -184,20 +173,6 @@ class AppWindow(Gtk.ApplicationWindow):
         hb.drag_dest_add_text_targets()
         hb.connect("drag-data-received", self.on_drag_data_received)
         return hb
-
-    def updateMemoryListBox(self, rBox = None):
-        # this is a bit insane, context-wise.
-        m = self.app.root.memory
-        p = self.app.root.programs
-        if not(rBox):
-            rBox = self.getActiveRowBox()
-        else:
-            rBox
-        oldLabel = rBox.get_children()[1]
-        progIndex = self.getActiveMemoryIndex(rBox)
-        oldLabel.set_label(p[m[progIndex]].name)
-        css = rBox.get_style_context()
-        css.add_class(self.app.root.cache_status[progIndex])
 
     def getMemSlotFromHBox(self, widget):
         return int(widget.get_children()[0].get_text())
@@ -240,4 +215,3 @@ class AppWindow(Gtk.ApplicationWindow):
     def deactivateAllInstruments(self):
         for b in self.all_instrument_buttons:
             b.set_sensitive(False)
-

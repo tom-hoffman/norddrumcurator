@@ -2,13 +2,15 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
+import rows
 import functions
 from constants import *
 from model import * 
 
 class EditProgramDialog(Gtk.Window):
-    def __init__(self, prog: NDProg):
-        self.prog = prog
+    def __init__(self, pr: rows.ProgramRow):
+        self.programRow = pr
+        self.prog = pr.program
         Gtk.Window.__init__(self, title =
                              f"Editing program {self.prog.ID + 1}: {self.prog.description}")
         self.set_modal(True)
@@ -36,7 +38,7 @@ class EditProgramDialog(Gtk.Window):
             for j in range(len(INSTRUMENTS)):
                 instrument = INSTRUMENTS[j]
                 iCombo.append_text(instrument)
-                if instrument == prog.instruments[i]:
+                if instrument == self.prog.instruments[i]:
                     iCombo.set_active(j)
             self.instrumentCombos.append(iCombo)
             grid.attach(iLabel, 0, row, 1, 1)
@@ -48,7 +50,7 @@ class EditProgramDialog(Gtk.Window):
         for i in range(len(KEYS)):
             key = KEYS[i] 
             self.keyCombo.append_text(key)
-            if key == prog.key:
+            if key == self.prog.key:
                 self.keyCombo.set_active(i)
         grid.attach(keyLabel, 0, row, 1, 1)
         grid.attach(self.keyCombo, 1, row, 2, 1)
@@ -71,8 +73,7 @@ class EditProgramDialog(Gtk.Window):
         p.description = self.descriptionEntry.get_text()
         p.instruments = [i.get_active_text() for i in self.instrumentCombos]
         p.key = self.keyCombo.get_active_text()
-        print(p.instruments)
-        # probably change the cache_status here?
+        self.programRow.updateRow(p)
         self.destroy()
             
 

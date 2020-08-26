@@ -12,7 +12,7 @@ box.dirty {
 
 button.instrument {
     padding: 3px;
-    min-width: 40px;
+    min-width: 50px;
     font-family: monospace;
 }
 

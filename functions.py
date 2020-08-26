@@ -45,6 +45,7 @@ def getMidiPort():
         raise ndexceptions.MidiInterfaceNotFound(MIDI_INTERFACE, mido.get_input_names())
 
 def clearMidiMessages(port):
+    # probably obselete
     for msg in port.iter_pending():
         print(f"Clearing {msg}.")
     print("Queue clear.")
@@ -93,6 +94,7 @@ def resetSysEx(m: mido.Message,
     return mido.Message('sysex', data = b)
 
 def allMessageToOne(m: mido.Message) -> mido.Message:
+    # Store and compare as ONE messages!
     return resetSysEx(m, True)
 
 def oneMessageToAll(m: mido.Message, n: int) -> mido.Message:
@@ -109,6 +111,7 @@ def receive_all(p: mido.ports.IOPort) -> List[mido.Message]:
     messages = []
     for i in range(99):
         m = receive_one(p)
+        c = allMessageToOne(m)
         messages.append(c)
     return messages
 
@@ -155,11 +158,11 @@ def findProgram(ID: int,
 def load_factory_soundbank(root : DataRoot):
     bank = mido.read_syx_file(FACTORY_SOUNDBANK)
     for i in range(81):
-        mess = functions.allMessageToOne(bank[i])
+        mess = allMessageToOne(bank[i])
         ID = root.program_counter
         description = FACTORY_SOUNDBANK_METADATA[i][1]
-        name = functions.program_file_name(ID, description)
-        check = functions.messageChecksum(mess)
+        name = program_file_name(ID, description)
+        check = messageChecksum(mess)
         style = FACTORY_SOUNDBANK_METADATA[i][0]
         cat = FACTORY_SOUNDBANK_METADATA[i][2]
         prog = NDProg(ID,
@@ -169,5 +172,5 @@ def load_factory_soundbank(root : DataRoot):
                       tags = [style, cat, "nord"])
                                                   
         root.programs = root.addProgram(prog)
-        functions.save_sysex(name, mess)
+        save_sysex(name, mess)
 

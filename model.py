@@ -1,8 +1,8 @@
 from typing import List, Dict, Tuple
 
 import mido
+import pickle
 
-import functions
 from constants import *
 
 #
@@ -17,7 +17,7 @@ class NDProg:
                  chk: int,
                  description: str,
                  replaces: int = -1,
-                 instruments: List[str] = ["kick", "snare", "?", "?"], 
+                 instruments: List[str] = 4 * ["?"], 
                  key: str = "?", 
                  tags: List[str] = []):
         self.ID = ID
