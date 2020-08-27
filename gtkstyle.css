@@ -3,10 +3,14 @@ window {
 }
 
 box.checked {
-    background-color : #FFE6A7;
+    background-color : #A5ACBA;
 }
 
 box.dirty {
+    background-color : #FFE6A7;
+}
+
+box.unknown {
     background-color : #FFE6A7;
 }
 

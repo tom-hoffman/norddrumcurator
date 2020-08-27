@@ -20,6 +20,7 @@ class ImportAllWindow(Gtk.Window):
         self.memListBox = memListBox
         self.midi_port = midi_port
         self.cleared = False
+        self.showingReadingMessage = False
         self.message_counter = 0
         self.set_modal(True)
         self.set_default_size(300, 200)
@@ -53,6 +54,12 @@ class ImportAllWindow(Gtk.Window):
         self.lab2.set_text('press PROG DUMP until it says "ALL,"')
         self.lab3.set_text('and then press PROGRAM.')
 
+    def showReadingMessage(self):
+        self.lab.set_text('')
+        self.lab1.set_text('Reading programs from')
+        self.lab2.set_text('Nord Drum...')
+        self.lab3.set_text('')
+
     def clear(self):
         m = self.midi_port.poll()
         if type(m) != mido.Message:
@@ -70,6 +77,9 @@ class ImportAllWindow(Gtk.Window):
             m = self.midi_port.poll()
             if isinstance(m, mido.Message):
                 if m.type == 'sysex':
+                    if not(self.showingReadingMessage):
+                        self.showReadingMessage()
+                        self.showingReadingMessage = True
                     # This should set each memory slot to the ID of
                     # the correct program.
                     # clean the message.
@@ -93,9 +103,6 @@ class ImportAllWindow(Gtk.Window):
                     self.root.cache_status[self.message_counter] = "checked"
                     self.message_counter += 1
                     self.progressBar.set_fraction(self.message_counter * 0.01)        
-
-
-
                     if self.message_counter == 99:
                         self.memListBox.updateAll()
                         self.destroy()

@@ -32,13 +32,19 @@ class NDProg:
     def __repr__(self):
         return f"NDProg: {self.description}."
 
+UNKNOWN_PLEASURES = NDProg(0,
+                           '../unknown_pleasures.syx',
+                           2175622434,
+                           "Unknown Pleasures",
+                           key = "C#")
+
 class DataRoot:
     '''Top level container for the data objects.'''
     def __init__(self,
-                 programs: List[NDProg] = [],
+                 programs: List[NDProg] = [UNKNOWN_PLEASURES],
                  memory: List[int] = [0] * 99, # clean this up.
                  cache_status: List[str] = ["dirty"] * 99,
-                 program_counter: int = 0):
+                 program_counter: int = 1):
         self.programs = programs
         self.memory = memory
         self.cache_status = cache_status

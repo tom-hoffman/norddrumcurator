@@ -138,5 +138,3 @@ def midiConfirmTone(port: mido.ports.IOPort):
 # Misc utility functions.
 
 
-
-
