@@ -7,7 +7,6 @@ import mido
 import crcmod.predefined
 
 import ndexceptions
-from model import *
 from constants import *
 
 # These are all functions that don't deal directly with the GTK UI.
@@ -15,7 +14,7 @@ from constants import *
 def messageChecksum(message: mido.Message) -> int:
     return zlib.crc32(message.bin())
 
-# Load/save data root
+# Load data root
 
 def load():
     f = open(PICKLE_FILENAME, 'rb')
@@ -23,9 +22,8 @@ def load():
     f.close()
     return d
 
-def program_file_name(ID: int,
-              description: str):
-    return f'{str(ID)}-{description}.syx'
+def program_file_name(ID: int) -> str:
+    return f'{str(ID)}.syx'
 
 
 # MIDI functions
@@ -139,38 +137,6 @@ def midiConfirmTone(port: mido.ports.IOPort):
 
 # Misc utility functions.
 
-def programMatch(newCheck: int, progDict: Dict):
-    # -1 is no match (ug)
-    match = -1
-    for k, v in progDict.items():
-        if newCheck == v.chk:
-            match = k
-    return match
 
-def findProgram(ID: int,
-                programs: List[NDProg]) -> NDProg:
-    it = None
-    for p in programs:
-        if ID == p.ID:
-            it = p
-    return it
 
-def load_factory_soundbank(root : DataRoot):
-    bank = mido.read_syx_file(FACTORY_SOUNDBANK)
-    for i in range(81):
-        mess = allMessageToOne(bank[i])
-        ID = root.program_counter
-        description = FACTORY_SOUNDBANK_METADATA[i][1]
-        name = program_file_name(ID, description)
-        check = messageChecksum(mess)
-        style = FACTORY_SOUNDBANK_METADATA[i][0]
-        cat = FACTORY_SOUNDBANK_METADATA[i][2]
-        prog = NDProg(ID,
-                      name,
-                      check,
-                      description,
-                      tags = [style, cat, "nord"])
-                                                  
-        root.programs = root.addProgram(prog)
-        save_sysex(name, mess)
 

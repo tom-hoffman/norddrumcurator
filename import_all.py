@@ -5,18 +5,22 @@ from gi.repository import Gtk, GLib
 import mido
 import time
 
+import rows
 import functions
+
 from model import *
 
 class ImportAllWindow(Gtk.Window):
     def __init__(self,
                  root: DataRoot,
+                 memListBox: rows.MemoryListBox,
                  midi_port: mido.ports.IOPort):
         Gtk.Window.__init__(self, title = "PROG DUMP ALL")
         self.root = root
+        self.memListBox = memListBox
         self.midi_port = midi_port
         self.cleared = False
-        self.messages = []
+        self.message_counter = 0
         self.set_modal(True)
         self.set_default_size(300, 200)
         self.set_border_width(10)
@@ -59,37 +63,60 @@ class ImportAllWindow(Gtk.Window):
             self.progressBar.pulse()
 
     def on_timeout(self):
-        # Called every 50 ms.
+        # Called every 80 ms (from above).
         if not(self.cleared):
             self.clear()
         else:
             m = self.midi_port.poll()
             if isinstance(m, mido.Message):
                 if m.type == 'sysex':
-                    c = functions.allMessageToOne(m)
-                    self.messages.append(c)
-                    l = len(self.messages)
-                    self.progressBar.set_fraction(l * 0.01)
-                    if l >= 99:
-                        print(self.messages)
-                        return False
-            else:
-                print("Slow the rate" + str(len(self.messages)))
-            
+                    # This should set each memory slot to the ID of
+                    # the correct program.
+                    # clean the message.
+                    cleaned_message = functions.allMessageToOne(m)
+                    # get the checksum.
+                    check = functions.messageChecksum(cleaned_message)
+                    # check if it is a dupe.
+                    match = self.root.findDuplicateProgram(check)
+                    if match == None:
+                        ID = self.root.program_counter
+                        file_path = functions.program_file_name(ID)
+                        prog = NDProg(ID,
+                                      file_path,
+                                      check,
+                                      "new import")
+                        self.root.addProgram(prog, cleaned_message)
+                        self.root.memory[self.message_counter] = ID
+                    else:
+                        self.root.memory[self.message_counter] = match
+                    # either way...
+                    self.root.cache_status[self.message_counter] = "checked"
+                    self.message_counter += 1
+                    self.progressBar.set_fraction(self.message_counter * 0.01)        
 
-        
+
+
+                    if self.message_counter == 99:
+                        self.memListBox.updateAll()
+                        self.destroy()
+                else:
+                    pass
+            else:
+                pass
         return True
 
-            
+
+
+
+
+
+#                     
+#                     
         
     
     def cancel(self,
                button: Gtk.Button):
         self.destroy()
 
-win = ImportAllWindow(DataRoot(), mido.open_ioport(functions.getMidiPort()))
-time.sleep(0)
-win.connect("destroy", Gtk.main_quit)
-win.show_all()
-Gtk.main()
+
 

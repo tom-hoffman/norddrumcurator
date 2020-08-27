@@ -9,6 +9,7 @@ from gi.repository import GLib
 import edit
 import rows
 import functions
+import import_all
 from model import *
 from constants import *
 from ndexceptions import *
@@ -27,7 +28,6 @@ class AppWindow(Gtk.ApplicationWindow):
                                        application=app)
         self.set_default_size(1000, 800)
         self.set_border_width(4)
-        self.connect("destroy", Gtk.main_quit)
         wholeGrid = Gtk.VBox()
         wholeGrid.set_size_request(1000, 800)
         self.add(wholeGrid)
@@ -52,24 +52,25 @@ class AppWindow(Gtk.ApplicationWindow):
         # Panes
         paned = Gtk.HPaned()
         wholeGrid.add(paned)
-        # Memory in left.
-        swLeft = Gtk.ScrolledWindow()
-        swLeft.set_shadow_type(Gtk.ShadowType.IN)
-        swLeft.set_size_request(360, 800)
-        self.memList = Gtk.ListBox()
-        self.memList.set_selection_mode(Gtk.SelectionMode.SINGLE)
-        swLeft.add(self.memList)
-        paned.add1(swLeft)
-        self.populateMemoryRows()
         # Programs on right.
         swRight = Gtk.ScrolledWindow()
         swRight.set_shadow_type(Gtk.ShadowType.IN)
         self.progListBox = Gtk.ListBox()
+        self.progListBox.set_selection_mode(Gtk.SelectionMode.SINGLE)
         # extend the all instr button list
         self.progListBox.connect("row-selected", self.programRowSelected)
         self.buildProgramRows()
         swRight.add(self.progListBox)
         paned.add2(swRight)
+        # Memory in left.
+        swLeft = Gtk.ScrolledWindow()
+        swLeft.set_shadow_type(Gtk.ShadowType.IN)
+        swLeft.set_size_request(400, 800)
+        self.memListBox = rows.MemoryListBox()
+        self.memListBox.set_selection_mode(Gtk.SelectionMode.SINGLE)
+        swLeft.add(self.memListBox)
+        paned.add1(swLeft)
+        self.buildMemoryRows()
 
     def getSelectedProgram(self) -> NDProg:
         return self.progListBox.get_selected_row().program
@@ -85,6 +86,9 @@ class AppWindow(Gtk.ApplicationWindow):
         ex = self.menuDict["Exit"]
         ex.set_sensitive(True)
         ex.connect("activate", self.ex)
+        pull = self.menuDict["Pull all..."]
+        pull.set_sensitive(True)
+        pull.connect("activate", self.pull_all)
 
     def launchEditDialog(self, menu):
         p = self.progListBox.get_selected_row()
@@ -98,6 +102,13 @@ class AppWindow(Gtk.ApplicationWindow):
 
     def ex(self, menu):
         self.destroy()
+        
+    def pull_all(self, menu):
+        iw = import_all.ImportAllWindow(self.app.root,
+                                   self.memListBox,
+                                   self.app.port)
+        iw.set_transient_for(self)
+        iw.show_all()
 
     def programRowSelected(self, box, row):
         if row:
@@ -109,50 +120,63 @@ class AppWindow(Gtk.ApplicationWindow):
 
     def redraw(self, w):
         # (w :: Gtk.Window)
-        self.app.root.programs[2]
+        self.memListBox.updateAll()
 
-    def updateProgramRow(self,
-                         prog: NDProg):
-        # find the matching program row
-        pass
-
-    def connectInstrumentButtons(self,
-                                 pr: rows.ProgramRow):
+    def connectProgramInstrumentButtons(self,
+                                        pr: rows.ProgramRow):
         for i in range(len(pr.channel_buttons)):
             b = pr.channel_buttons[i]
             b.connect("clicked", self.previewProgramSound, 3 - i)
-            pr.testButton.connect("clicked", self.activateInstruments,
+            pr.testButton.connect("clicked",
+                                  self.activateProgramInstruments,
                                    pr)
             self.all_instrument_buttons.append(b)
 
-    def activateInstruments(self,
-                            button: Gtk.Button,
-                            pr: rows.ProgramRow):
+    def connectMemoryInstrumentButtons(self,
+                                       mr: rows.MemoryRow):
+        for i in range(len(mr.channel_buttons)):
+            b = mr.channel_buttons[i]
+            b.connect("clicked", self.previewProgramSound, 3 - i)
+            mr.testButton.connect("clicked",
+                                  self.activateMemoryInstruments,
+                                  mr)
+            self.all_instrument_buttons.append(b)                                 
+
+    def activateProgramInstruments(self,
+                                   button: Gtk.Button,
+                                   pr: rows.ProgramRow):
         syx = functions.read_sysex(pr.program.file)
         self.app.port.send(syx)
         self.deactivateAllInstruments()
         for b in pr.channel_buttons:
             b.set_sensitive(True)
+    
+    def activateMemoryInstruments(self,
+                                  button: Gtk.Button,
+                                  mr: rows.MemoryRow):
+        value = self.app.root.memory[mr.slot]
+        program = self.app.root.findProgram(value)
+        syx = functions.read_sysex(program.file)
+        self.app.port.send(syx)
+        self.deactivateAllInstruments()
+        for b in mr.channel_buttons:
+            b.set_sensitive(True)
+        
+
+# Building program and memory rows.
 
     def buildProgramRows(self):
         progs = self.app.root.programs
         for p in progs:
             self.progListBox.add(rows.ProgramRow(p))
-        self.progListBox.foreach(self.connectInstrumentButtons)
+        self.progListBox.foreach(self.connectProgramInstrumentButtons)
 
-    def populateMemoryRows(self):
+    def buildMemoryRows(self):
         slots = self.app.root.memory
         for i in range(0, len(slots)):
-            self.memList.add(self.buildMemoryRow(i))
+            self.memListBox.add(rows.MemoryRow(i,self.app.root))
+        self.memListBox.foreach(self.connectMemoryInstrumentButtons)
 
-
-
-    def buildMemoryRow(self, i):
-        # (i :: int) -> Gtk.ListBoxRow
-        r = Gtk.ListBoxRow()
-        hb = self.memRowLabels(i)
-        r.add(hb)
-        return r
 
     def memRowLabels(self, i):
         # (i :: int) -> Gtk.Hbox
@@ -173,9 +197,7 @@ class AppWindow(Gtk.ApplicationWindow):
         hb.drag_dest_add_text_targets()
         hb.connect("drag-data-received", self.on_drag_data_received)
         return hb
-
-    def getMemSlotFromHBox(self, widget):
-        return int(widget.get_children()[0].get_text())
+    
 
 # Drag and drop handlers.
 

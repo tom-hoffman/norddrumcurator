@@ -16,9 +16,24 @@ button.instrument {
     font-family: monospace;
 }
 
+button.mem-instrument {
+    padding: 1px;
+    min-width: 35px;
+    font-family: monospace;
+    font-size: x-small;
+}
+    
+
 button.control {
     padding: 3px;
     min-width: 35px;
     font-weight: bold;
 }
 
+button.mem-control {
+    padding: 1px;
+    min-width: 20px;
+    font-weight: bold;
+    font-size: x-small;
+   
+}

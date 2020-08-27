@@ -19,7 +19,7 @@ class NordDrum1Manager(Gtk.Application):
                                          self.root.cache_status))
         except FileNotFoundError:
             self.root = DataRoot()
-            functions.load_factory_soundbank(self.root)
+            self.root.load_factory_soundbank()
         self.port = mido.open_ioport(functions.getMidiPort())
         Gtk.Application.__init__(self)
             
