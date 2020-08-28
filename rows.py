@@ -1,6 +1,6 @@
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GdkX11
 
 import ndexceptions
 from model import *
@@ -12,15 +12,11 @@ class ProgramRow(Gtk.ListBoxRow):
         Gtk.ListBoxRow.__init__(self)
         self.program = program
         hb = Gtk.HBox()
-        # setting up drag and drop
-        hb.drag_source_set(Gdk.ModifierType.BUTTON1_MASK,
-                           [],
-                           Gdk.DragAction.COPY)
-        hb.drag_source_add_text_targets()
-        #hb.connect('drag-begin', self.drag_begin)
-        #hb.connect('drag-data-get', self.drag_data_get)
-        self.descriptionLabel = Gtk.Label(label = self.program.description)
-        hb.pack_start(self.descriptionLabel,
+        copyButton = Gtk.Button.new_from_icon_name("edit-copy", 2)
+        hb.pack_start(copyButton, expand = False, fill = False, padding = 2)
+        descriptionLabel = Gtk.Label(label = self.program.description)
+
+        hb.pack_start(descriptionLabel,
                       expand = False, fill = False, padding = 2)
         self.add(hb)
         buttonBox = Gtk.HBox()
@@ -38,6 +34,12 @@ class ProgramRow(Gtk.ListBoxRow):
         self.testButton.get_style_context().add_class("control")
         buttonBox.pack_end(self.testButton, expand = False,
                            fill = False, padding = 2)
+        copyButton.drag_source_set(Gdk.ModifierType.BUTTON1_MASK,
+                           [],
+                           Gdk.DragAction.COPY)
+        copyButton.drag_source_add_text_targets()
+        copyButton.connect('drag-begin', self.drag_begin)
+        copyButton.connect('drag-data-get', self.drag_data_get)
     
     def updateRow(self,
                   new: NDProg):
@@ -45,6 +47,19 @@ class ProgramRow(Gtk.ListBoxRow):
         instruments = list(reversed(new.instruments))
         for i in range(len(self.channel_buttons)):
             self.channel_buttons[i].set_label(instruments[i])
+            
+    def drag_begin(self,
+                   widget: Gtk.Widget,
+                   context: GdkX11.X11DragContext):
+        print(f'Beginning drag from {widget}.')
+
+    def drag_data_get(self,
+                      sending_widget: Gtk.Widget,
+                      context: GdkX11.X11DragContext,
+                      data: Gtk.SelectionData,
+                      info: int,
+                      time: int):
+        data.set_text(str(self.program.ID), -1)
         
 class MemoryRow(Gtk.ListBoxRow):
     def __init__(self,
@@ -58,7 +73,7 @@ class MemoryRow(Gtk.ListBoxRow):
         # Drag and drop setup
         self.hb.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.COPY)
         self.hb.drag_dest_add_text_targets()
-        # self.hb.connect("drag-data-received", self.on_drag_data_received)
+        self.hb.connect("drag-data-received", self.on_drag_data_received)
         self.numberLabel = Gtk.Label(label = f"{str(self.slot + 1)}.  ")
         self.hb.pack_start(self.numberLabel, expand = False,
                       fill = False, padding = 0)
@@ -87,6 +102,7 @@ class MemoryRow(Gtk.ListBoxRow):
         css = self.hb.get_style_context()
         css.remove_class("dirty")
         css.remove_class("unknown")
+        css.remove_class("checked")
         css.add_class(self.root.cache_status[self.slot])
         value = self.root.memory[self.slot]
         program = self.root.findProgram(value)
@@ -95,25 +111,19 @@ class MemoryRow(Gtk.ListBoxRow):
         for i in range(len(self.channel_buttons)):
             self.channel_buttons[i].set_label(instruments[i])
 
-#     def on_drag_data_received(self, widget, drag_context, x, y,
-#                               data, info, time):
-#         text = data.get_text()
-#         if text != "-1":
-#             slot = self.getMemSlotFromHBox(widget)
-#             print(f"Received program {text} for memory slot {slot}.")
-#             prog = int(text)
-#             self.app.root.memory[slot] = prog
-#             self.app.root.cache_status[slot] = "dirty"
-#             self.redraw(None, widget)
-#         else:
-#             warn = Gtk.MessageDialog(
-#                 transient_for = self,
-#                 flags = 0,
-#                 message_type = Gtk.MessageType.ERROR,
-#                 buttons=Gtk.ButtonsType.OK,
-#                 text="You cannot drag a channel")
-#             warn.run()
-#             warn.destroy()
+    def on_drag_data_received(self,
+                              widget,
+                              drag_context: GdkX11.X11DragContext,
+                              x: int,
+                              y: int,
+                              data: Gtk.SelectionData,
+                              info: int,
+                              time: int):
+        self.root.memory[self.slot] = int(data.get_text())
+        self.root.cache_status[self.slot] = "dirty"
+        self.updateRow()
+        
+                              
 
 class MemoryListBox(Gtk.ListBox):
     def __init__(self):

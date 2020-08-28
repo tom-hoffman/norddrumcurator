@@ -3,8 +3,7 @@ from typing import List, Dict
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-from gi.repository import GLib
+from gi.repository import Gtk, GLib, GdkX11
 
 import edit
 import rows
@@ -13,7 +12,6 @@ import import_all
 from model import *
 from constants import *
 from ndexceptions import *
-
 
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
@@ -176,35 +174,6 @@ class AppWindow(Gtk.ApplicationWindow):
         for i in range(0, len(slots)):
             self.memListBox.add(rows.MemoryRow(i,self.app.root))
         self.memListBox.foreach(self.connectMemoryInstrumentButtons)
-
-
-    def memRowLabels(self, i):
-        # (i :: int) -> Gtk.Hbox
-        hb = Gtk.HBox()
-        css = hb.get_style_context()
-        css.add_class(self.app.root.cache_status[i])
-        if self.app.root.memory[i] == -1:
-            hb.pack_start(Gtk.Label("No data."),
-                          expand = False, fill = True, padding = 10)
-        else:
-            p = self.getProgramFromMemory(i)
-            labels = [str(i), p.description]
-            for l in labels:
-                hb.pack_start(Gtk.Label(l),
-                              expand = False, fill = True, padding = 10)
-
-        hb.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.COPY)
-        hb.drag_dest_add_text_targets()
-        hb.connect("drag-data-received", self.on_drag_data_received)
-        return hb
-    
-
-# Drag and drop handlers.
-
-    def tree_drag_begin(self, treeview, context):
-        print(f'Beginning drag from {treeview}.')
-
-
 
 # Button handlers.
     
