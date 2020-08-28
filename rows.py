@@ -14,9 +14,9 @@ class ProgramRow(Gtk.ListBoxRow):
         hb = Gtk.HBox()
         copyButton = Gtk.Button.new_from_icon_name("edit-copy", 2)
         hb.pack_start(copyButton, expand = False, fill = False, padding = 2)
-        descriptionLabel = Gtk.Label(label = self.program.description)
+        self.descriptionLabel = Gtk.Label(label = self.program.description)
 
-        hb.pack_start(descriptionLabel,
+        hb.pack_start(self.descriptionLabel,
                       expand = False, fill = False, padding = 2)
         self.add(hb)
         buttonBox = Gtk.HBox()

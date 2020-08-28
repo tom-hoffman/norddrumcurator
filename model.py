@@ -53,10 +53,6 @@ class DataRoot:
     def __repr__(self):
         return f"DataRoot has {len(self.programs)} programs on disc."
 
-
-
-
-
     def addProgram(self,
                    p: NDProg,
                    m: mido.Message):
@@ -82,6 +78,10 @@ class DataRoot:
             if prog_id == p.ID:
                 it = p
         return it
+    
+    def programFromSlot(self,
+                        slot: int) -> NDProg:
+        return self.findProgram(self.memory[slot])
 
     def load_factory_soundbank(self):
         bank = mido.read_syx_file(FACTORY_SOUNDBANK)

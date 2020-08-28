@@ -94,7 +94,7 @@ class ImportAllWindow(Gtk.Window):
                         prog = NDProg(ID,
                                       file_path,
                                       check,
-                                      "new import")
+                                      f"new import-{ID}")
                         self.root.addProgram(prog, cleaned_message)
                         self.root.memory[self.message_counter] = ID
                     else:

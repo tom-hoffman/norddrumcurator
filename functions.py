@@ -1,4 +1,5 @@
 import os
+import time
 import zlib
 import pickle
 from typing import List, Dict
@@ -116,11 +117,14 @@ def receive_all(p: mido.ports.IOPort) -> List[mido.Message]:
 def send_one(p: mido.ports.IOPort, m: mido.Message):
     p.send(m)
 
-def send_all(l: List[mido.Message]):
+def send_all(port: mido.ports.IOPort,
+             l: List[mido.Message]):
+    port.close()
     print("Writing sysex file to disc...")
     mido.write_syx_file('write.syx', l)
     print("Pushing sysex file via amidi.")
-    os.system('amidi -p hw:6 -s write.syx') # this needs to be smarter
+    os.system('amidi -p hw:5 -s write.syx') # this needs to be smarter
+    
     
 def playSound(port: mido.ports.IOPort,
               ch: int):

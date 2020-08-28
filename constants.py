@@ -40,7 +40,7 @@ CONTEXT.add_provider_for_screen(SCREEN, CSS, PRIORITY)
 MENU_DICT = {"File" : ("New", "Open...", "Save", "Save as...", "Save copy...",
                        "Print...", "Exit"),
              "Edit" : ("Copy", "Paste", "SEPARATOR", "Edit program..."),
-             "Sync" : ("Check sync", "Pull all...", "Push changes")}
+             "Sync" : ("Check sync", "Pull all...", "Push to ND")}
 
 FACTORY_SOUNDBANK_METADATA = (("retro", "Monologue", "drums"),
 ("real", "Classic Vistalite", "drums"),

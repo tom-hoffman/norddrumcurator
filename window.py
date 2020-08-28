@@ -87,7 +87,10 @@ class AppWindow(Gtk.ApplicationWindow):
         pull = self.menuDict["Pull all..."]
         pull.set_sensitive(True)
         pull.connect("activate", self.pull_all)
-
+        push = self.menuDict["Push to ND"]
+        push.set_sensitive(True)
+        push.connect("activate", self.push_to_nd)
+        
     def launchEditDialog(self, menu):
         p = self.progListBox.get_selected_row()
         diag = edit.EditProgramDialog(p)
@@ -103,8 +106,8 @@ class AppWindow(Gtk.ApplicationWindow):
         
     def pull_all(self, menu):
         iw = import_all.ImportAllWindow(self.app.root,
-                                   self.memListBox,
-                                   self.app.port)
+                                        self.memListBox,
+                                        self.app.port)
         iw.set_transient_for(self)
         iw.show_all()
 
@@ -113,6 +116,20 @@ class AppWindow(Gtk.ApplicationWindow):
             self.menuDict["Edit program..."].set_sensitive(True)
         else:
             self.menuDict["Edit program..."].set_sensitive(False)
+            
+    def push_to_nd(self, menu):
+        messages = []
+        for i in range(99):
+            f = self.app.root.programFromSlot(i).file
+            message = functions.oneMessageToAll(functions.read_sysex(f), i)
+            messages.append(message)
+        functions.send_all(self.app.port, messages)
+        self.app.root.cache_status = 99 * ["checked"]
+        self.memListBox.updateAll()
+        self.app.root.save()
+        self.app.port = mido.open_ioport(functions.getMidiPort())
+
+        
 
 # Other window methods
 
