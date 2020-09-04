@@ -28,26 +28,6 @@ The basic model for the interface is a double paned window, where the left pane 
 
 This will all be managed via SYSEX messages to and from the ND1.  Unfortunately the actual binary format used by the ND1 does some kind of tricky checksumming that hasn't been reverse engineered completely.  Without that, we can't actually edit the programs themselves outside the ND1.
 
-Current Status
---------------
-
-As of 8/14/2020, I'm doing a major refactoring now that I have a better 
-understanding of how to dump and push all files at once. 
-
-What works:
-
- * Pulling and saving a program from your Nord Drum.
- * Entering metadata when you pull the program.
- * Dragging and dropping an imported program into a different memory location.
- * Pushing the program to its new location on the Nord Drum.
-
-In short, it is now useful. I'm going to use it like this for a little while and next priorities will come 
-
-TODO:
-
- * Editing the metadata on existing programs.
- * Prettying up programs pane (Gtk.CellRendererToggle).
-
 Python dependencies
 -------------------
 
