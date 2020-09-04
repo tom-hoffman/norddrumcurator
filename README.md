@@ -9,14 +9,14 @@ As of Sept 4, 2020, the code in the "sets" branch is considered alpha quality. T
 
 For example, here's what I'm doing now:
 
-	* Design a base kit I like. I'm a rock drummer, so in this case is is a very ringy and resonant kit sound.
-	* Pull that to the app, give it a name and other metadata.
-	* Drag copies of the kit to five consecutive memory locations (say 95 - 99).
-	* Push the changes to the ND1.
-	* Now I can edit 96 - 99 to be different variations on the original kit (shorter decay, different base tones, less noise, etc).
-	* Pull those versions back in to the ND, and update the metadata.
-	* Now I can switch between those kit variations for different parts of a song, in my case using a footswitch on the Midi Baby 3.
-	* If I ever get to the point of doing this in a live set, I can also use the app to sequence the programs for a specific set of songs.
+  * Design a base kit I like. I'm a rock drummer, so in this case is is a very ringy and resonant kit sound.
+  * Pull that to the app, give it a name and other metadata.
+  * Drag copies of the kit to five consecutive memory locations (say 95 - 99).
+  * Push the changes to the ND1.
+  * Now I can edit 96 - 99 to be different variations on the original kit (shorter decay, different base tones, less noise, etc).
+  * Pull those versions back in to the ND, and update the metadata.
+  * Now I can switch between those kit variations for different parts of a song, in my case using a footswitch on the Midi Baby 3.
+  * If I ever get to the point of doing this in a live set, I can also use the app to sequence the programs for a specific set of songs.
 
 Please note that "Nord" and "Nord Drum" are trademarks of Clavia DMI AB, with whom I have no connection.
 
