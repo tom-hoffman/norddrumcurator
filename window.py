@@ -107,6 +107,7 @@ class AppWindow(Gtk.ApplicationWindow):
     def pull_all(self, menu):
         iw = import_all.ImportAllWindow(self.app.root,
                                         self.memListBox,
+                                        self.progListBox,
                                         self.app.port)
         iw.set_transient_for(self)
         iw.show_all()
@@ -126,7 +127,6 @@ class AppWindow(Gtk.ApplicationWindow):
         functions.send_all(self.app.port, messages)
         self.app.root.cache_status = 99 * ["checked"]
         self.memListBox.updateAll()
-        self.app.root.save()
         self.app.port = mido.open_ioport(functions.getMidiPort())
 
         

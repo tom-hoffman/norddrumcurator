@@ -1,17 +1,14 @@
-window {
-    background-color : #A5ACBA;
-}
 
 box.checked {
-    background-color : #A5ACBA;
+    background-color : #7EDDD2;
 }
 
 box.dirty {
-    background-color : #FFE6A7;
+    background-color : #E76F51;
 }
 
 box.unknown {
-    background-color : #FFE6A7;
+    background-color : #E9C46A;
 }
 
 button.instrument {

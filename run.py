@@ -30,8 +30,12 @@ class NordDrum1Manager(Gtk.Application):
             return s
 
     def do_activate(self):
-        mWin = window.AppWindow(self)
-        mWin.show_all()
+        self.win = window.AppWindow(self)
+        self.win.connect("destroy", self.cleanup)
+        self.win.show_all()
+        
+    def cleanup(self, menu = None):
+        self.port.close()
         
     def do_startup(self):
         Gtk.Application.do_startup(self)

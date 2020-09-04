@@ -14,10 +14,12 @@ class ImportAllWindow(Gtk.Window):
     def __init__(self,
                  root: DataRoot,
                  memListBox: rows.MemoryListBox,
+                 progListBox: Gtk.ListBox,
                  midi_port: mido.ports.IOPort):
         Gtk.Window.__init__(self, title = "PROG DUMP ALL")
         self.root = root
         self.memListBox = memListBox
+        self.progListBox = progListBox
         self.midi_port = midi_port
         self.cleared = False
         self.showingReadingMessage = False
@@ -97,6 +99,11 @@ class ImportAllWindow(Gtk.Window):
                                       f"new import-{ID}")
                         self.root.addProgram(prog, cleaned_message)
                         self.root.memory[self.message_counter] = ID
+                        parentWin = self.props.transient_for
+                        pRow = rows.ProgramRow(prog)
+                        self.progListBox.add(pRow)
+                        self.progListBox.show_all()
+                        # parentWin.connectProgramInstrumentButtons(pRow)
                     else:
                         self.root.memory[self.message_counter] = match
                     # either way...

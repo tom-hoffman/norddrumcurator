@@ -5,9 +5,22 @@ This is a personal project to write a GTK3 app in Python to manage the Nord Drum
 
 ![Early development screenshot.](https://raw.githubusercontent.com/tom-hoffman/norddrumcurator/master/nd-curator.png)
 
+As of Sept 4, 2020, the code in the "sets" branch is considered alpha quality. That is, there are bugs and quirks, but it is usable to me. You can pull the whole set of programs from a ND1.  You can set the name and other metadata for the programs.  The programs appear where they currently are in the ND memory and are also saved to a library of all programs. You can drag programs from the library into specific slots.  You can push all programs back to the ND.
+
+For example, here's what I'm doing now:
+
+	* Design a base kit I like. I'm a rock drummer, so in this case is is a very ringy and resonant kit sound.
+	* Pull that to the app, give it a name and other metadata.
+	* Drag copies of the kit to five consecutive memory locations (say 95 - 99).
+	* Push the changes to the ND1.
+	* Now I can edit 96 - 99 to be different variations on the original kit (shorter decay, different base tones, less noise, etc).
+	* Pull those versions back in to the ND, and update the metadata.
+	* Now I can switch between those kit variations for different parts of a song, in my case using a footswitch on the Midi Baby 3.
+	* If I ever get to the point of doing this in a live set, I can also use the app to sequence the programs for a specific set of songs.
+
 Please note that "Nord" and "Nord Drum" are trademarks of Clavia DMI AB, with whom I have no connection.
 
-The original, somewhat short lived, Nord Drum 1 has no utilities for managing drum programs, unlike the subsequent Nord Drum 2 and 3p. Currently I'm only worring about the Nord Drum 1, because that's the one I got.  Adding support for the 2 or 3p should not be hard.
+The original, somewhat short lived, Nord Drum 1 has no utilities for managing drum programs, unlike the subsequent Nord Drum 2 and 3p. Currently I'm only worring about the Nord Drum 1, because that's the one I got.  Adding support for the 2 or 3p should not be (very) hard, mostly supporting multiple banks and more inputs.
 
 In particular, what I want to do is arrange related sets of programs in adjacent memory locations, so I can use a foot switch to change from, say, one drum program for the verse of a song, to a different one for the chorus, and then back again. I'd also like to be able to easily rearange programs to match a different sequence of songs for live performance.
 

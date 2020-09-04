@@ -1,0 +1,14 @@
+Nord Drum Curator TODO
+----------------------
+
+* Add program to listbox after adding via import_all. - 8/30 TEH
+* Implement file chooser dialogs to save both memory & data root.
+* Fix bug activating buttons after adding a new program.
+* Add preview buttons to edit program dialog.
+* Check pushing files.
+* Figure out how to get amidi to use the right port automatically.
+* Need dirty color.
+* Implement replaces prop on programs.
+* Hiding/deleting programs.
+* Printing.
+* Change method fr clearing the queue.
